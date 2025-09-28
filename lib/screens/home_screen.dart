@@ -190,13 +190,21 @@ class HomeScreen extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: const [
-                                    Text(
-                                      'Get a free meal when you collect 2000 points.',
-                                      style: TextStyle(color: Colors.white70),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: null,
-                                      child: Text('Redeem'),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Get a free meal when you collect 2000 points.',
+                                          style: TextStyle(
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: null,
+                                          child: Text('Redeem'),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -424,9 +432,9 @@ class HomeScreen extends StatelessWidget {
             ],
             'allergens': ['Gluten', 'Dairy'],
             'availability': 'Pick up 1:00 PM - 3:00 PM',
-          }
+          },
         };
-        
+
         Navigator.push(
           context,
           MaterialPageRoute(
