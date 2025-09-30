@@ -184,12 +184,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       const Icon(Icons.location_on, size: 16, color: Colors.grey),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: Flexible(
-                          child: Text(
-                            product['location'] ?? '23 Spruce Street, Portland, OR 97214',
-                            style: const TextStyle(color: Colors.grey),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        child: Text(
+                          product['location'] ?? '23 Spruce Street, Portland, OR 97214',
+                          style: const TextStyle(color: Colors.grey),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const Icon(Icons.chevron_right, color: Colors.grey),
