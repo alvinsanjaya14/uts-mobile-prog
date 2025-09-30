@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'product_detail.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -163,12 +164,12 @@ class HomeScreen extends StatelessWidget {
                                 ),
                                 TextButton(
                                   onPressed: () {},
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                  ),
                                   child: const Text(
                                     'View history',
                                     style: TextStyle(color: Colors.white),
-                                  ),
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: Colors.white,
                                   ),
                                 ),
                               ],
@@ -189,13 +190,21 @@ class HomeScreen extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: const [
-                                    Text(
-                                      'Get a free meal when you collect 2000 points.',
-                                      style: TextStyle(color: Colors.white70),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: null,
-                                      child: Text('Redeem'),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Get a free meal when you collect 2000 points.',
+                                          style: TextStyle(
+                                            color: Colors.white70,
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: null,
+                                          child: Text('Redeem'),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -403,66 +412,97 @@ class HomeScreen extends StatelessWidget {
     String price, {
     bool small = false,
   }) {
-    return Container(
-      width: small ? 160 : 260,
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 6)],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: small ? 80 : 110,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
+    return GestureDetector(
+      onTap: () {
+        // Sample product data based on the JSON structure
+        final sampleProduct = {
+          'product': {
+            'imageurl': null, // You can add actual image URLs here
+            'name': title,
+            'rating': 4.3,
+            'rating_count': 60,
+            'location': '23 Spruce Street, Portland, OR 97214',
+            'price': double.tryParse(price.replaceAll('\$', '')) ?? 0.0,
+            'ingredients': [
+              {'name': 'Chicken breast', 'qty': '200', 'unit': 'g'},
+              {'name': 'Bell peppers', 'qty': '100', 'unit': 'g'},
+              {'name': 'Onions', 'qty': '50', 'unit': 'g'},
+              {'name': 'Tomatoes', 'qty': '150', 'unit': 'g'},
+              {'name': 'Rice', 'qty': '1', 'unit': 'cup'},
+            ],
+            'allergens': ['Gluten', 'Dairy'],
+            'availability': 'Pick up 1:00 PM - 3:00 PM',
+          },
+        };
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailScreen(product: sampleProduct),
+          ),
+        );
+      },
+      child: Container(
+        width: small ? 160 : 260,
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 6)],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: small ? 80 : 110,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+              ),
+              child: const Center(
+                child: Icon(Icons.image, size: 36, color: Colors.grey),
               ),
             ),
-            child: const Center(
-              child: Icon(Icons.image, size: 36, color: Colors.grey),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    price,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: const [
+                      Icon(Icons.access_time, size: 14, color: Colors.grey),
+                      SizedBox(width: 6),
+                      Text(
+                        '08 - 10 pm',
+                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(Icons.location_on, size: 14, color: Colors.grey),
+                      SizedBox(width: 6),
+                      Text(
+                        '0.8 mi',
+                        style: TextStyle(color: Colors.grey, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  price,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: const [
-                    Icon(Icons.access_time, size: 14, color: Colors.grey),
-                    SizedBox(width: 6),
-                    Text(
-                      '08 - 10 pm',
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                    SizedBox(width: 8),
-                    Icon(Icons.location_on, size: 14, color: Colors.grey),
-                    SizedBox(width: 6),
-                    Text(
-                      '0.8 mi',
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
