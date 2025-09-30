@@ -131,13 +131,6 @@ flutter run
 ```
 Hot reload for quick UI tweaks; controllers retain state across reloads.
 
-## Roadmap Ideas
-* Shell route for bottom navigation (persistent nav across tabs)
-* Extract constants (spacing, colors) into a design system file
-* Introduce repository abstraction if multiple data sources appear
-* Add deep link support & web URL strategy
-* Unit + widget tests
-
 ---
 Original Flutter starter instructions below (kept for reference):
 
