@@ -1,4 +1,9 @@
-# uts_mobile_restoran
+# UTS Restaurant Mobile
+Team Members:
+* SHINICHI WIJAYA
+* FAIZ ABDURRAHMAN
+* ALVIN SANJAYA
+* ANDRONIKUS
 
 Restaurant ordering sample app demonstrating a lightweight MVC architecture plus declarative navigation using `go_router`.
 
