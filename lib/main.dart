@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'controllers/product_controller.dart';
 import 'services/product_service.dart';
-import 'views/home_view.dart';
+import 'routes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           create: (_) => ProductController(ProductService())..loadProducts(),
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Restaurant App',
         theme: ThemeData(
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
           useMaterial3: true,
         ),
-        home: const HomeView(),
+        routerConfig: appRouter,
       ),
     );
   }

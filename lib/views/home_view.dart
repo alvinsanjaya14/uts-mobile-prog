@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../controllers/product_controller.dart';
 import '../models/product.dart';
-import 'product_detail_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -256,12 +256,8 @@ class HomeView extends StatelessWidget {
   Widget _buildDynamicFoodCard(BuildContext context, Product product) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ProductDetailView(product: product),
-          ),
-        );
+        final id = product.id.isNotEmpty ? product.id : product.name.hashCode.toString();
+        context.push('/product/$id', extra: product);
       },
       child: Container(
         width: 260,

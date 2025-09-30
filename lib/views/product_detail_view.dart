@@ -107,7 +107,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(width: 4),
-                      Text('(${_ratingCount}+)', style: const TextStyle(color: Colors.grey)),
+                      Text('($_ratingCount+)', style: const TextStyle(color: Colors.grey)),
                     ],
                   ),
                   const SizedBox(height: 16),
