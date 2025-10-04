@@ -3,7 +3,7 @@ Team Members:
 * SHINICHI WIJAYA
 * FAIZ ABDURRAHMAN
 * ALVIN SANJAYA
-* ANDRONIKUS
+* ANDRONIKUS G. PANGABDI
 
 Restaurant ordering sample app demonstrating a lightweight MVC architecture plus declarative navigation using `go_router`.
 
@@ -27,14 +27,14 @@ lib/
 		product_controller.dart
 	services/              # External/data access (API, DB, mock)
 		product_service.dart
-	views/                 # UI widgets (Stateless/Stateful) - one screen per file
-		home_view.dart
-		product_detail_view.dart
+	screens/                 # UI widgets (Stateless/Stateful) - one screen per file
+		home_screen.dart
+		product_detail_screen.dart
 ```
 
 ### MVC Roles
 * Model (`models/product.dart`): Pure data, serialization helpers, immutable, no Flutter imports (except equality helpers).
-* View (`views/*.dart`): Stateless/Stateful Widgets building UI. No business logic beyond simple formatting & user interaction relay.
+* View (`screens/*.dart`): Stateless/Stateful Widgets building UI. No business logic beyond simple formatting & user interaction relay.
 * Controller (`controllers/product_controller.dart`): Holds UI state, calls services, exposes reactive fields (`notifyListeners()`).
 * Service (`services/product_service.dart`): Data source abstraction (currently mock). Replace with real API client later.
 
@@ -116,13 +116,6 @@ Swap in `main.dart` provider creation.
 1. Add fields to `Product` (ensure immutability & update `fromMap`).
 2. Re-run any mock service to include the new key.
 3. Expose computed/UI-friendly getters in controller if transformation needed.
-
-## Testing Suggestions (Not yet included)
-| Layer | Suggested Test |
-|-------|----------------|
-| Service | Mock HTTP and assert parsing |
-| Controller | Load success & error paths |
-| View | Golden / widget smoke test for `HomeView` |
 
 ## Running
 ```bash
