@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'models/product.dart';
-import 'views/home_view.dart';
-import 'views/product_detail_view.dart';
+import 'screens/home_screen.dart';
+import 'screens/product_detail_screen.dart';
 
 /// Centralized route names
 class AppRoutes {
@@ -16,7 +16,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.home,
       name: 'home',
-      builder: (context, state) => const HomeView(),
+      builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
       path: '${AppRoutes.productDetail}/:id',
@@ -24,7 +24,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) {
         final extra = state.extra;
         if (extra is Product) {
-          return ProductDetailView(product: extra);
+          return ProductDetailScreen(product: extra);
         }
         // Fallback error UI
         return Scaffold(

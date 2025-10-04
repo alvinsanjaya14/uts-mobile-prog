@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uts_mobile_restoran/widgets/custom_button.dart';
 import '../models/product.dart';
 
 /// Product detail view (MVC View) replicating original `ProductDetailScreen` layout.
@@ -6,15 +7,15 @@ import '../models/product.dart';
 /// currently shown with placeholder / derived values since `Product` model
 /// does not yet expose them. Extend `Product` or introduce a separate detail
 /// DTO if backend adds those fields.
-class ProductDetailView extends StatefulWidget {
+class ProductDetailScreen extends StatefulWidget {
   final Product product;
-  const ProductDetailView({super.key, required this.product});
+  const ProductDetailScreen({super.key, required this.product});
 
   @override
-  State<ProductDetailView> createState() => _ProductDetailViewState();
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
 
-class _ProductDetailViewState extends State<ProductDetailView> {
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int quantity = 1;
 
   // Placeholder mock data (would come from a service in a fuller implementation)
@@ -23,10 +24,10 @@ class _ProductDetailViewState extends State<ProductDetailView> {
   String get _availability => 'Pick up 1:00 PM - 3:00 PM';
   String get _location => '23 Spruce Street, Portland, OR 97214';
   List<Map<String, dynamic>> get _ingredients => const [
-        {'name': 'Tomato', 'qty': 2, 'unit': 'pcs'},
-        {'name': 'Basil', 'qty': 5, 'unit': 'leaves'},
-        {'name': 'Olive Oil', 'qty': 10, 'unit': 'ml'},
-      ];
+    {'name': 'Tomato', 'qty': 2, 'unit': 'pcs'},
+    {'name': 'Basil', 'qty': 5, 'unit': 'leaves'},
+    {'name': 'Olive Oil', 'qty': 10, 'unit': 'ml'},
+  ];
   List<String> get _allergens => const ['Dairy', 'Gluten'];
 
   @override
@@ -36,8 +37,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
-          // App bar with product image
-            SliverAppBar(
+          SliverAppBar(
             expandedHeight: 300,
             pinned: true,
             backgroundColor: Colors.white,
@@ -63,17 +63,12 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                 ),
                 child: product.imageUrl == null
                     ? const Center(
-                        child: Icon(
-                          Icons.image,
-                          size: 80,
-                          color: Colors.grey,
-                        ),
+                        child: Icon(Icons.image, size: 80, color: Colors.grey),
                       )
                     : null,
               ),
             ),
           ),
-          // Body content
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -107,21 +102,34 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(width: 4),
-                      Text('($_ratingCount+)', style: const TextStyle(color: Colors.grey)),
+                      Text(
+                        '($_ratingCount+)',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   // Availability + day
                   Row(
                     children: [
-                      const Icon(Icons.access_time, size: 16, color: Colors.grey),
+                      const Icon(
+                        Icons.access_time,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(width: 8),
-                      Text(_availability, style: const TextStyle(color: Colors.grey)),
+                      Text(
+                        _availability,
+                        style: const TextStyle(color: Colors.grey),
+                      ),
                       const SizedBox(width: 8),
                       Container(
                         width: 4,
                         height: 4,
-                        decoration: const BoxDecoration(color: Colors.grey, shape: BoxShape.circle),
+                        decoration: const BoxDecoration(
+                          color: Colors.grey,
+                          shape: BoxShape.circle,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       const Text('Today', style: TextStyle(color: Colors.grey)),
@@ -130,7 +138,11 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                      const Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -153,11 +165,21 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                     style: const TextStyle(color: Colors.grey, height: 1.5),
                   ),
                   const SizedBox(height: 24),
-                  _buildExpandableSection('Ingredients', _ingredients, _buildIngredientsContent),
+                  _buildExpandableSection(
+                    'Ingredients',
+                    _ingredients,
+                    _buildIngredientsContent,
+                  ),
                   const SizedBox(height: 16),
-                  _buildExpandableSection('Allergens', _allergens, _buildAllergensContent),
+                  _buildExpandableSection(
+                    'Allergens',
+                    _allergens,
+                    _buildAllergensContent,
+                  ),
                   const SizedBox(height: 16),
-                  _buildExpandableSection('About Restaurant', {'name': 'Italiano Ristorante'}, _buildRestaurantContent),
+                  _buildExpandableSection('About Restaurant', {
+                    'name': 'Italiano Ristorante',
+                  }, _buildRestaurantContent),
                   const SizedBox(height: 120),
                 ],
               ),
@@ -170,7 +192,10 @@ class _ProductDetailViewState extends State<ProductDetailView> {
     );
   }
 
-  Widget _circleIconButton({required IconData icon, required VoidCallback onPressed}) {
+  Widget _circleIconButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
     return Container(
       margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -184,7 +209,10 @@ class _ProductDetailViewState extends State<ProductDetailView> {
           ),
         ],
       ),
-      child: IconButton(icon: Icon(icon, color: Colors.black), onPressed: onPressed),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.black),
+        onPressed: onPressed,
+      ),
     );
   }
 
@@ -212,13 +240,18 @@ class _ProductDetailViewState extends State<ProductDetailView> {
               child: Row(
                 children: [
                   IconButton(
-                    onPressed: quantity > 1 ? () => setState(() => quantity--) : null,
+                    onPressed: quantity > 1
+                        ? () => setState(() => quantity--)
+                        : null,
                     icon: const Icon(Icons.remove),
                     color: quantity > 1 ? Colors.black : Colors.grey,
                   ),
                   Text(
                     quantity.toString(),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   IconButton(
                     onPressed: () => setState(() => quantity++),
@@ -229,7 +262,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: ElevatedButton(
+              child: CustomButton.primary(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -238,16 +271,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
                     ),
                   );
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-                child: const Text(
-                  'Reserve now',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
+                text: 'Reserve now',
               ),
             ),
           ],
@@ -284,7 +308,10 @@ class _ProductDetailViewState extends State<ProductDetailView> {
 
   Widget _buildIngredientsContent(dynamic ingredients) {
     if (ingredients == null || ingredients is! List) {
-      return const Text('No ingredients information available.', style: TextStyle(color: Colors.grey));
+      return const Text(
+        'No ingredients information available.',
+        style: TextStyle(color: Colors.grey),
+      );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +339,10 @@ class _ProductDetailViewState extends State<ProductDetailView> {
 
   Widget _buildAllergensContent(dynamic allergens) {
     if (allergens == null || allergens is! List) {
-      return const Text('No allergen information available.', style: TextStyle(color: Colors.grey));
+      return const Text(
+        'No allergen information available.',
+        style: TextStyle(color: Colors.grey),
+      );
     }
     return Wrap(
       spacing: 8,
@@ -320,7 +350,7 @@ class _ProductDetailViewState extends State<ProductDetailView> {
       children: allergens.map<Widget>((allergen) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.orange[50],
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.orange[200]!),
@@ -353,7 +383,11 @@ class _ProductDetailViewState extends State<ProductDetailView> {
   String _getProductDescription(Product product) {
     // Placeholder description generation using mock ingredients list.
     if (_ingredients.isNotEmpty) {
-      final main = _ingredients.take(3).map((e) => e['name']).whereType<String>().join(', ');
+      final main = _ingredients
+          .take(3)
+          .map((e) => e['name'])
+          .whereType<String>()
+          .join(', ');
       return 'Delicious ${product.name.toLowerCase()} made with $main and served with various toppings.';
     }
     return 'A delicious meal prepared with fresh ingredients and served with care.';
