@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'controllers/product_controller.dart';
+import 'controllers/restaurant_controller.dart';
 import 'services/product_service.dart';
+import 'services/restaurant_service.dart';
 import 'routes.dart';
 
 void main() {
@@ -18,12 +20,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => ProductController(ProductService())..loadProducts(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => RestaurantController(RestaurantService())..loadRestaurants(),
+        ),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Restaurant App',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0AA67B)),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 0, 127, 95)),
           scaffoldBackgroundColor: Colors.white,
           useMaterial3: true,
         ),

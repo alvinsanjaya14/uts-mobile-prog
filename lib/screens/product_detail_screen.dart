@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uts_mobile_restoran/widgets/circle_icon_button.dart';
 import 'package:uts_mobile_restoran/widgets/custom_button.dart';
 import '../models/product.dart';
+import '../models/restaurant.dart';
+import '../controllers/restaurant_controller.dart';
 
-/// Product detail view (MVC View) replicating original `ProductDetailScreen` layout.
-/// Missing domain fields (rating, availability, location, ingredients, allergens) are
-/// currently shown with placeholder / derived values since `Product` model
-/// does not yet expose them. Extend `Product` or introduce a separate detail
-/// DTO if backend adds those fields.
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
   const ProductDetailScreen({super.key, required this.product});
@@ -17,18 +16,35 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int quantity = 1;
+  Restaurant? _restaurant;
 
-  // Placeholder mock data (would come from a service in a fuller implementation)
-  double get _rating => 4.8; // TODO: replace with real field
-  int get _ratingCount => 120; // TODO: replace with real field
-  String get _availability => 'Pick up 1:00 PM - 3:00 PM';
-  String get _location => '23 Spruce Street, Portland, OR 97214';
-  List<Map<String, dynamic>> get _ingredients => const [
-    {'name': 'Tomato', 'qty': 2, 'unit': 'pcs'},
-    {'name': 'Basil', 'qty': 5, 'unit': 'leaves'},
-    {'name': 'Olive Oil', 'qty': 10, 'unit': 'ml'},
-  ];
-  List<String> get _allergens => const ['Dairy', 'Gluten'];
+  // Track expansion states
+  bool _ingredientsExpanded = false;
+  bool _allergensExpanded = false;
+
+  // Use actual product model data
+  double get _rating => widget.product.rating;
+  int get _ratingCount => widget.product.ratingCount;
+  List<Map<String, dynamic>> get _ingredients => widget.product.ingredients;
+  List<Map<String, dynamic>> get _allergens => widget.product.allergens;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRestaurant();
+  }
+
+  Future<void> _loadRestaurant() async {
+    final controller = context.read<RestaurantController>();
+    final restaurant = await controller.getRestaurantById(
+      widget.product.restaurantId.toString(),
+    );
+    if (restaurant != null && mounted) {
+      setState(() {
+        _restaurant = restaurant;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,17 +54,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 300,
+            expandedHeight: MediaQuery.of(context).size.height * 0.3,
             pinned: true,
             backgroundColor: Colors.white,
             elevation: 0,
-            leading: _circleIconButton(
+            leading: CircleIconButton.transparent(
+              iconColor: Colors.white,
               icon: Icons.arrow_back,
               onPressed: () => Navigator.pop(context),
             ),
             actions: [
-              _circleIconButton(icon: Icons.favorite_border, onPressed: () {}),
-              _circleIconButton(icon: Icons.share, onPressed: () {}),
+              CircleIconButton.filled(
+                icon: Icons.favorite_border,
+                onPressed: () {},
+              ),
+              CircleIconButton.filled(icon: Icons.share, onPressed: () {}),
             ],
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
@@ -75,22 +95,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    product.name,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        product.name,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '\$${product.price.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '\$${product.price.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.green,
-                    ),
-                  ),
+
                   const SizedBox(height: 12),
                   // Rating row
                   Row(
@@ -110,58 +136,73 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                   const SizedBox(height: 16),
                   // Availability + day
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.access_time,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        _availability,
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        width: 4,
-                        height: 4,
-                        decoration: const BoxDecoration(
+                  if (_restaurant != null) ...[
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.access_time,
+                          size: 16,
                           color: Colors.grey,
-                          shape: BoxShape.circle,
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      const Text('Today', style: TextStyle(color: Colors.grey)),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          _location,
+                        const SizedBox(width: 8),
+                        Text(
+                          'Pick up ${_restaurant!.pickUpSchedule.scheduleText}',
                           style: const TextStyle(color: Colors.grey),
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      const Icon(Icons.chevron_right, color: Colors.grey),
-                    ],
-                  ),
+                        const SizedBox(width: 8),
+                        Container(
+                          width: 4,
+                          height: 4,
+                          decoration: const BoxDecoration(
+                            color: Colors.grey,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          _restaurant!.pickUpSchedule.isOpenNow()
+                              ? 'Open now'
+                              : 'Closed',
+                          style: TextStyle(
+                            color: _restaurant!.pickUpSchedule.isOpenNow()
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  const SizedBox(height: 8),
+                  if (_restaurant != null) ...[
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.location_on,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _restaurant!.address,
+                            style: const TextStyle(color: Colors.grey),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const Icon(Icons.chevron_right, color: Colors.grey),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: 24),
                   const Text(
-                    'What you get',
+                    'What you will get',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _getProductDescription(product),
+                    product.description.isNotEmpty
+                        ? product.description
+                        : _getProductDescription(product),
                     style: const TextStyle(color: Colors.grey, height: 1.5),
                   ),
                   const SizedBox(height: 24),
@@ -169,17 +210,30 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     'Ingredients',
                     _ingredients,
                     _buildIngredientsContent,
+                    _ingredientsExpanded,
+                    (expanded) =>
+                        setState(() => _ingredientsExpanded = expanded),
                   ),
                   const SizedBox(height: 16),
                   _buildExpandableSection(
                     'Allergens',
                     _allergens,
                     _buildAllergensContent,
+                    _allergensExpanded,
+                    (expanded) => setState(() => _allergensExpanded = expanded),
                   ),
                   const SizedBox(height: 16),
-                  _buildExpandableSection('About Restaurant', {
-                    'name': 'Italiano Ristorante',
-                  }, _buildRestaurantContent),
+                  if (_restaurant != null) ...[
+                    const Text(
+                      'About Restaurant',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildRestaurantContent(_restaurant),
+                  ],
                   const SizedBox(height: 120),
                 ],
               ),
@@ -189,30 +243,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       ),
       // Bottom reservation bar replicating original behavior
       bottomSheet: _buildBottomReservation(product),
-    );
-  }
-
-  Widget _circleIconButton({
-    required IconData icon,
-    required VoidCallback onPressed,
-  }) {
-    return Container(
-      margin: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: Colors.black),
-        onPressed: onPressed,
-      ),
     );
   }
 
@@ -284,51 +314,76 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     String title,
     dynamic data,
     Widget Function(dynamic) contentBuilder,
+    bool isExpanded,
+    Function(bool) onExpansionChanged,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[200]!),
-        borderRadius: BorderRadius.circular(8),
+    return ExpansionTile(
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
-      child: ExpansionTile(
-        title: Text(
-          title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-        trailing: const Icon(Icons.add),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: contentBuilder(data),
-          ),
-        ],
-      ),
+      trailing: Icon(isExpanded ? Icons.remove : Icons.add),
+      shape: const Border(),
+      collapsedShape: const Border(),
+      onExpansionChanged: onExpansionChanged,
+      children: [
+        Padding(padding: const EdgeInsets.all(16), child: contentBuilder(data)),
+      ],
     );
   }
 
   Widget _buildIngredientsContent(dynamic ingredients) {
-    if (ingredients == null || ingredients is! List) {
+    if (ingredients == null || ingredients is! List || ingredients.isEmpty) {
       return const Text(
         'No ingredients information available.',
         style: TextStyle(color: Colors.grey),
       );
     }
+    
+    final ingredientNames = ingredients.map((ingredient) {
+      if (ingredient is Map<String, dynamic>) {
+        return ingredient['name'] ?? 'Unknown ingredient';
+      } else {
+        return ingredient.toString();
+      }
+    }).toList();
+    
+    return Text(
+      ingredientNames.join(', '),
+      style: const TextStyle(fontSize: 14),
+    );
+  }
+
+  Widget _buildAllergensContent(dynamic allergens) {
+    if (allergens == null || allergens is! List || allergens.isEmpty) {
+      return const Text(
+        'No allergen information available.',
+        style: TextStyle(color: Colors.grey),
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: ingredients.map<Widget>((ingredient) {
+      children: allergens.map<Widget>((allergen) {
+        String allergenName;
+
+        if (allergen is Map<String, dynamic>) {
+          allergenName = allergen['name'] ?? 'Unknown';
+        } else {
+          allergenName = allergen.toString();
+        }
+
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Row(
             children: [
-              Expanded(
-                child: Text(
-                  ingredient['name'] ?? 'Unknown ingredient',
-                  style: const TextStyle(fontSize: 14),
-                ),
+              const Icon(
+                Icons.warning_amber_outlined,
+                size: 16,
+                color: Colors.orange,
               ),
-              Text(
-                '${ingredient['qty'] ?? ''} ${ingredient['unit'] ?? ''}',
-                style: const TextStyle(fontSize: 14, color: Colors.grey),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(allergenName, style: const TextStyle(fontSize: 14)),
               ),
             ],
           ),
@@ -337,59 +392,290 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _buildAllergensContent(dynamic allergens) {
-    if (allergens == null || allergens is! List) {
+  Widget _buildRestaurantContent(dynamic restaurant) {
+    if (restaurant is! Restaurant) {
       return const Text(
-        'No allergen information available.',
+        'Restaurant information not available.',
         style: TextStyle(color: Colors.grey),
       );
     }
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: allergens.map<Widget>((allergen) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.orange[50],
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.orange[200]!),
-          ),
-          child: Text(
-            allergen.toString(),
-            style: TextStyle(fontSize: 12, color: Colors.orange[800]),
-          ),
-        );
-      }).toList(),
+
+    return InkWell(
+      onTap: () => _showRestaurantBottomSheet(restaurant),
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+        child: Row(
+          children: [
+            const Icon(Icons.store, color: Colors.grey, size: 24),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                restaurant.name,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Colors.grey),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildRestaurantContent(dynamic restaurant) {
-    return Row(
-      children: [
-        const Icon(Icons.restaurant, color: Colors.grey),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            restaurant['name'] ?? 'Restaurant Name',
-            style: const TextStyle(fontSize: 14),
+  void _showRestaurantBottomSheet(Restaurant restaurant) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        minChildSize: 0.5,
+        maxChildSize: 0.9,
+        builder: (context, scrollController) => Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            children: [
+              // Handle bar
+              Container(
+                margin: const EdgeInsets.only(top: 8),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    // Restaurant image
+                    Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: restaurant.imageUrl != null
+                            ? DecorationImage(
+                                image: NetworkImage(restaurant.imageUrl!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                        color: restaurant.imageUrl == null 
+                            ? Colors.grey[200] 
+                            : null,
+                      ),
+                      child: restaurant.imageUrl == null
+                          ? const Center(
+                              child: Icon(
+                                Icons.restaurant,
+                                size: 60,
+                                color: Colors.grey,
+                              ),
+                            )
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Restaurant name
+                    Text(
+                      restaurant.name,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Rating and pickup time row
+                    Row(
+                      children: [
+                        const Icon(Icons.star, color: Colors.orange, size: 20),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${restaurant.rating.toStringAsFixed(1)} (${restaurant.ratingCount}+)',
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(width: 16),
+                        const Icon(Icons.access_time, size: 16, color: Colors.grey),
+                        const SizedBox(width: 4),
+                        Text(
+                          restaurant.pickUpSchedule.scheduleText,
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Location and directions row
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            restaurant.address,
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        CustomButton.primary(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Opening directions...'),
+                                backgroundColor: Colors.blue,
+                              ),
+                            );
+                          },
+                          text: 'Directions',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    
+                    // Products section
+                    const Text(
+                      'Menu Items',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Product list
+                    _buildRestaurantProductList(restaurant),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        const Icon(Icons.chevron_right, color: Colors.grey),
-      ],
+      ),
     );
+  }
+
+  Widget _buildRestaurantProductList(Restaurant restaurant) {
+    // Get products from this restaurant
+    return FutureBuilder<List<Product>>(
+      future: _getProductsByRestaurant(restaurant.id),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Text(
+            'No menu items available.',
+            style: TextStyle(color: Colors.grey),
+          );
+        }
+        
+        final products = snapshot.data!;
+        return Column(
+          children: products.map((product) => 
+            Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey[200]!),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  // Product image
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: product.imageUrl != null
+                          ? DecorationImage(
+                              image: NetworkImage(product.imageUrl!),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                      color: product.imageUrl == null ? Colors.grey[200] : null,
+                    ),
+                    child: product.imageUrl == null
+                        ? const Icon(Icons.fastfood, color: Colors.grey)
+                        : null,
+                  ),
+                  const SizedBox(width: 12),
+                  
+                  // Product details
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product.name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '\$${product.price.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green,
+                          ),
+                        ),
+                        if (product.description.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            product.description,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ).toList(),
+        );
+      },
+    );
+  }
+
+  Future<List<Product>> _getProductsByRestaurant(String restaurantId) async {
+    // This is a mock implementation - in a real app, you'd fetch from your service
+    // For now, return a filtered list based on the current product's restaurant
+    if (restaurantId == widget.product.restaurantId.toString()) {
+      return [widget.product]; // Return current product as example
+    }
+    return [];
   }
 
   String _getProductDescription(Product product) {
-    // Placeholder description generation using mock ingredients list.
-    if (_ingredients.isNotEmpty) {
-      final main = _ingredients
+    // Generate description based on ingredients or provide default
+    if (product.ingredients.isNotEmpty) {
+      final mainIngredients = product.ingredients
           .take(3)
-          .map((e) => e['name'])
-          .whereType<String>()
+          .map((ing) => ing['name'])
+          .where((name) => name != null)
           .join(', ');
-      return 'Delicious ${product.name.toLowerCase()} made with $main and served with various toppings.';
+
+      return 'Delicious ${product.name.toLowerCase()} made with $mainIngredients and served with various toppings.';
     }
+
     return 'A delicious meal prepared with fresh ingredients and served with care.';
   }
 }

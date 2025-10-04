@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// A custom button widget that provides consistent styling across the app.
-/// Supports primary (green) and danger (red) button types with outline and text variants.
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -53,8 +51,8 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonStyle = _getButtonStyle();
-    final child = _buildButtonContent();
+    final buttonStyle = _getButtonStyle(context);
+    final child = _buildButtonContent(context);
 
     Widget button;
     
@@ -88,7 +86,7 @@ class CustomButton extends StatelessWidget {
     return button;
   }
 
-  Widget _buildButtonContent() {
+  Widget _buildButtonContent(BuildContext context) {
     if (isLoading) {
       return SizedBox(
         height: _getIconSize(),
@@ -96,7 +94,7 @@ class CustomButton extends StatelessWidget {
         child: CircularProgressIndicator(
           strokeWidth: 2,
           valueColor: AlwaysStoppedAnimation<Color>(
-            _getLoadingIndicatorColor(),
+            _getLoadingIndicatorColor(context),
           ),
         ),
       );
@@ -116,8 +114,8 @@ class CustomButton extends StatelessWidget {
     return Text(text);
   }
 
-  ButtonStyle _getButtonStyle() {
-    final colors = _getColors();
+  ButtonStyle _getButtonStyle(BuildContext context) {
+    final colors = _getColors(context);
     
     return ButtonStyle(
       backgroundColor: WidgetStateProperty.resolveWith<Color?>(
@@ -217,15 +215,15 @@ class CustomButton extends StatelessWidget {
     }
   }
 
-  Map<String, Color?> _getColors() {
+  Map<String, Color?> _getColors(BuildContext context) {
     Color baseColor;
     
     switch (type) {
       case CustomButtonType.primary:
-        baseColor = const Color.fromARGB(255, 0, 127, 95);
+        baseColor = Theme.of(context).colorScheme.primary;
         break;
       case CustomButtonType.danger:
-        baseColor = Colors.red;
+        baseColor = Theme.of(context).colorScheme.error;
         break;
     }
 
@@ -250,9 +248,11 @@ class CustomButton extends StatelessWidget {
     }
   }
 
-  Color _getLoadingIndicatorColor() {
+  Color _getLoadingIndicatorColor(BuildContext context) {
     if (isTextOnly || isOutlined) {
-      return type == CustomButtonType.primary ? Colors.green[700]! : Colors.red[300]!;
+      return type == CustomButtonType.primary 
+          ? Theme.of(context).colorScheme.primary
+          : Theme.of(context).colorScheme.error;
     } else {
       return Colors.white;
     }
