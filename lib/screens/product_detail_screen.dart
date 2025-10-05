@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../controllers/cart_controller.dart';
+import '../controllers/product_controller.dart';
 import '../routes.dart';
 import 'package:uts_mobile_restoran/widgets/circle_icon_button.dart';
 import 'package:uts_mobile_restoran/widgets/custom_button.dart';
@@ -17,6 +18,7 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int quantity = 1;
+  bool _isSaved = false;
 
   // Track expansion states
   bool _ingredientsExpanded = false;
@@ -27,6 +29,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int get _ratingCount => widget.product.ratingCount;
   List<Map<String, dynamic>> get _ingredients => widget.product.ingredients;
   List<Map<String, dynamic>> get _allergens => widget.product.allergens;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfSaved();
+  }
+
+  Future<void> _checkIfSaved() async {
+    final isSaved = await context.read<ProductController>().isProductSaved(widget.product.id);
+    if (mounted) {
+      setState(() {
+        _isSaved = isSaved;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +65,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
             actions: [
               CircleIconButton.filled(
-                icon: Icons.favorite_border,
-                onPressed: () {},
+                icon: _isSaved ? Icons.favorite : Icons.favorite_border,
+                iconColor: _isSaved ? Colors.red.shade400 : Colors.grey.shade600,
+                onPressed: () async {
+                  await context.read<ProductController>().toggleProductSaved(widget.product);
+                  await _checkIfSaved(); // Refresh the saved state
+                  
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          _isSaved 
+                            ? '${widget.product.name} added to saved items'
+                            : '${widget.product.name} removed from saved items',
+                        ),
+                        duration: const Duration(seconds: 2),
+                        backgroundColor: Colors.grey[800],
+                      ),
+                    );
+                  }
+                },
               ),
               CircleIconButton.filled(icon: Icons.share, onPressed: () {}),
             ],

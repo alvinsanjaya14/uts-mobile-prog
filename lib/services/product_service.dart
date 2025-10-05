@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product.dart';
 
 /// Simulated data service. Replace with real API / DB layer later.
@@ -294,11 +296,41 @@ class ProductService {
     return products.firstWhere((p) => p.id == id);
   }
 
-  /// Simulates fetching saved product IDs from local storage
+  /// Fetches saved product IDs from SharedPreferences
   Future<List<String>> fetchSavedProductIds() async {
-    await Future.delayed(const Duration(milliseconds: 150));
-    // Mock saved product IDs - in real app would come from SharedPreferences/DB
-    return ['1', '3', '7', '9', '10', '12']; // Sample saved product IDs
+    final prefs = await SharedPreferences.getInstance();
+    final savedIds = prefs.getStringList('saved_product_ids') ?? [];
+    return savedIds;
+  }
+
+  /// Saves a product ID to favorites
+  Future<bool> saveProductToFavorites(String productId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedIds = prefs.getStringList('saved_product_ids') ?? [];
+    
+    if (!savedIds.contains(productId)) {
+      savedIds.add(productId);
+      return await prefs.setStringList('saved_product_ids', savedIds);
+    }
+    return true; // Already saved
+  }
+
+  /// Removes a product ID from favorites
+  Future<bool> removeProductFromFavorites(String productId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedIds = prefs.getStringList('saved_product_ids') ?? [];
+    
+    if (savedIds.contains(productId)) {
+      savedIds.remove(productId);
+      return await prefs.setStringList('saved_product_ids', savedIds);
+    }
+    return true; // Already removed
+  }
+
+  /// Checks if a product is saved to favorites
+  Future<bool> isProductSaved(String productId) async {
+    final savedIds = await fetchSavedProductIds();
+    return savedIds.contains(productId);
   }
 
   /// Fetches full product details for saved product IDs

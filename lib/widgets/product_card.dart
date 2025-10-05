@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../models/product.dart';
+import '../controllers/product_controller.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -240,7 +242,7 @@ class ProductRowCard extends StatefulWidget {
   final int? stockCount;
   final VoidCallback? onTap;
   final VoidCallback? onFavoriteToggle;
-  final bool isFavorite;
+  final bool? isFavorite; // Make nullable for auto-detection
 
   const ProductRowCard({
     super.key,
@@ -248,7 +250,7 @@ class ProductRowCard extends StatefulWidget {
     this.stockCount,
     this.onTap,
     this.onFavoriteToggle,
-    this.isFavorite = false,
+    this.isFavorite, // Auto-detect if null
   });
 
   @override
@@ -256,6 +258,28 @@ class ProductRowCard extends StatefulWidget {
 }
 
 class _ProductRowCardState extends State<ProductRowCard> {
+  bool? _isFavorite;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.isFavorite;
+    if (_isFavorite == null) {
+      _checkIfSaved();
+    }
+  }
+
+  Future<void> _checkIfSaved() async {
+    if (mounted) {
+      final isCurrentlySaved = await context.read<ProductController>().isProductSaved(widget.product.id);
+      if (mounted) {
+        setState(() {
+          _isFavorite = isCurrentlySaved;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -380,10 +404,32 @@ class _ProductRowCardState extends State<ProductRowCard> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         IconButton(
-          onPressed: widget.onFavoriteToggle,
+          onPressed: () async {
+            if (widget.onFavoriteToggle != null) {
+              widget.onFavoriteToggle!();
+            } else {
+              // Handle favorite toggle ourselves
+              await context.read<ProductController>().toggleProductSaved(widget.product);
+              await _checkIfSaved(); // Refresh the saved state
+              
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      (_isFavorite ?? false)
+                        ? '${widget.product.name} added to saved items'
+                        : '${widget.product.name} removed from saved items',
+                    ),
+                    duration: const Duration(seconds: 2),
+                    backgroundColor: Colors.grey[800],
+                  ),
+                );
+              }
+            }
+          },
           icon: Icon(
-            widget.isFavorite ? Icons.favorite : Icons.favorite_border,
-            color: widget.isFavorite 
+            (_isFavorite ?? false) ? Icons.favorite : Icons.favorite_border,
+            color: (_isFavorite ?? false)
                 ? Colors.red[400] 
                 : Colors.grey[400],
             size: 24,

@@ -73,4 +73,31 @@ class ProductController extends ChangeNotifier {
     _searchError = null;
     notifyListeners();
   }
+
+  /// Toggles a product's saved status
+  Future<void> toggleProductSaved(Product product) async {
+    try {
+      final isCurrentlySaved = await _service.isProductSaved(product.id);
+      
+      if (isCurrentlySaved) {
+        await _service.removeProductFromFavorites(product.id);
+        _savedProducts.removeWhere((p) => p.id == product.id);
+      } else {
+        await _service.saveProductToFavorites(product.id);
+        if (!_savedProducts.any((p) => p.id == product.id)) {
+          _savedProducts.add(product);
+        }
+      }
+      
+      notifyListeners();
+    } catch (e) {
+      _savedError = e.toString();
+      notifyListeners();
+    }
+  }
+
+  /// Checks if a product is currently saved
+  Future<bool> isProductSaved(String productId) async {
+    return await _service.isProductSaved(productId);
+  }
 }

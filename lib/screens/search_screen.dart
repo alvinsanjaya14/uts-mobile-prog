@@ -92,7 +92,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.green.shade700, width: 2),
+                  borderSide: BorderSide(
+                    color: Colors.green.shade700,
+                    width: 2,
+                  ),
                 ),
                 filled: true,
                 fillColor: Colors.grey.shade50,
@@ -101,9 +104,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
 
           // Search Results
-          Expanded(
-            child: _buildSearchContent(),
-          ),
+          Expanded(child: _buildSearchContent()),
         ],
       ),
     );
@@ -116,11 +117,7 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search,
-              size: 80,
-              color: Colors.grey.shade300,
-            ),
+            Icon(Icons.search, size: 80, color: Colors.grey.shade300),
             const SizedBox(height: 16),
             Text(
               'Start typing to search',
@@ -133,10 +130,7 @@ class _SearchScreenState extends State<SearchScreen> {
             const SizedBox(height: 8),
             Text(
               'Search for dishes, ingredients, or cuisine types',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade400,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade400),
               textAlign: TextAlign.center,
             ),
           ],
@@ -150,11 +144,7 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off,
-              size: 80,
-              color: Colors.grey.shade300,
-            ),
+            Icon(Icons.search_off, size: 80, color: Colors.grey.shade300),
             const SizedBox(height: 16),
             Text(
               'No results found',
@@ -167,10 +157,7 @@ class _SearchScreenState extends State<SearchScreen> {
             const SizedBox(height: 8),
             Text(
               'Try searching for something else',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade400,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade400),
             ),
           ],
         ),
@@ -188,13 +175,8 @@ class _SearchScreenState extends State<SearchScreen> {
           child: ProductRowCard(
             product: product,
             onTap: () {
-              Navigator.pop(context); // Go back to browse screen
               // Navigate to product detail
-              Navigator.pushNamed(
-                context,
-                '/product/${product.id}',
-                arguments: product,
-              );
+              context.push('/product/${product.id}', extra: product);
             },
           ),
         );

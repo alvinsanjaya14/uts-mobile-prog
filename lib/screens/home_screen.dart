@@ -18,6 +18,15 @@ class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController();
 
   @override
+  void initState() {
+    super.initState();
+    // Load saved products when home screen initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductController>().loadSavedProducts();
+    });
+  }
+
+  @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
@@ -55,9 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   const SizedBox(),
                                   _buildPointsBanner(),
                                   _buildActionButtons(context),
-                                  _buildFavoriteMenuSection(
+                                  _buildMenuSection(
                                     context,
-                                    controller.products,
+                                    controller,
                                   ),
                                 ],
                               ),
@@ -333,20 +342,26 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildFavoriteMenuSection(
+  Widget _buildMenuSection(
     BuildContext context,
-    List<Product> products,
+    ProductController controller,
   ) {
-    // Get top-rated products (4.5+ rating) for favorites
-    final favoriteProducts = products
-        .where((product) => product.rating >= 4.5 && product.isAvailable)
-        .take(4)
-        .toList();
-
-    if (favoriteProducts.isEmpty) {
-      return const SizedBox.shrink();
+    // Check if user has saved products
+    final hasSavedProducts = controller.savedProducts.isNotEmpty;
+    
+    if (hasSavedProducts) {
+      // Show saved products
+      return _buildSavedMenuSection(context, controller.savedProducts);
+    } else {
+      // Show popular menu as fallback
+      return _buildPopularMenuSection(context, controller.products);
     }
+  }
 
+  Widget _buildSavedMenuSection(
+    BuildContext context,
+    List<Product> savedProducts,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -354,7 +369,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
-              'Your Favorite Menu',
+              'Your Saved Menu',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             TextButton(
@@ -377,7 +392,66 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              ...favoriteProducts.map(
+              ...savedProducts.take(4).map(
+                (product) => Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: ProductCard(product: product, isSmall: true),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPopularMenuSection(
+    BuildContext context,
+    List<Product> products,
+  ) {
+    // Get top-rated products (4.5+ rating) sorted by rating count for popularity
+    final popularProducts = products
+        .where((product) => product.rating >= 4.0 && product.isAvailable)
+        .toList()
+      ..sort((a, b) => b.ratingCount.compareTo(a.ratingCount));
+
+    final topPopular = popularProducts.take(4).toList();
+
+    if (topPopular.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Popular Menu',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            TextButton(
+              onPressed: () {
+                context.goNamed('browse');
+              },
+              child: Text(
+                'Browse All',
+                style: TextStyle(
+                  color: const Color(0xFF0AA67B),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 200,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              ...topPopular.map(
                 (product) => Padding(
                   padding: const EdgeInsets.only(right: 12),
                   child: ProductCard(product: product, isSmall: true),
