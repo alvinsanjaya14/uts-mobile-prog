@@ -9,6 +9,9 @@ import 'screens/personal_details_screen.dart';
 import 'screens/my_orders_screen.dart';
 import 'screens/privacy_and_data_screen.dart';
 import 'screens/notifications_screen.dart';
+import 'screens/help_centre_screen.dart';
+import 'screens/help_contact_screen.dart';
+import 'screens/help_detail_screen.dart';
 
 /// Centralized route names
 class AppRoutes {
@@ -20,6 +23,10 @@ class AppRoutes {
   static const myOrders = '/profile/my-orders';
   static const privacy = '/profile/privacy';
   static const notifications = '/profile/notifications';
+  static const help = '/help';
+  static const helpContact = '/help/contact';
+  static const helpCancel = '/help/cancel-order';
+  static const helpCollection = '/help/collection-time';
 }
 
 /// GoRouter configuration
@@ -74,6 +81,36 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.notifications,
       name: 'notifications',
       builder: (context, state) => const NotificationsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.help,
+      name: 'help',
+      builder: (context, state) => const HelpCentreScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.helpContact,
+      name: 'help-contact',
+      builder: (context, state) => const HelpContactScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.helpCancel,
+      name: 'help-cancel',
+      builder: (context, state) => const HelpDetailScreen(
+        title: 'Cancel order',
+        content:
+            'You can cancel up to 2 hours before the start of your collection time by going to your order.\n\nThis ensures that the food can be saved by someone else.',
+        actionLabel: 'Go to my orders',
+        action: null,
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.helpCollection,
+      name: 'help-collection',
+      builder: (context, state) => const HelpDetailScreen(
+        title: 'Collection time',
+        content:
+            'You can cancel up to 2 hours before the start of your collection time by going to your order.\n\nThis ensures that the food can be saved by someone else.',
+      ),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

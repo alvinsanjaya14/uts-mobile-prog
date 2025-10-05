@@ -85,7 +85,12 @@ class ProfileScreen extends StatelessWidget {
                       context.push(AppRoutes.notifications);
                     },
                   ),
-                  _buildListTile('Help centre', onTap: () {}),
+                  _buildListTile(
+                    'Help centre',
+                    onTap: () {
+                      context.push(AppRoutes.help);
+                    },
+                  ),
                   _buildListTile(
                     'Privacy and data',
                     onTap: () {
