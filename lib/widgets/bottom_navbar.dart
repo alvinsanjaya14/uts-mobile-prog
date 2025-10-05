@@ -55,10 +55,9 @@ class BottomNavbar extends StatelessWidget {
             );
             break;
           case 3:
-            // Cart - placeholder for future implementation
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Cart feature coming soon!')),
-            );
+            if (currentIndex != 3) {
+              context.goNamed('cart'); // <-- Ubah ini
+            }
             break;
           case 4:
             if (currentIndex != 4) {

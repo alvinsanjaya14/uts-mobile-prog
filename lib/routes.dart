@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'models/product.dart';
+import 'screens/cart_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/product_detail_screen.dart';
 import 'screens/saved_screen.dart';
@@ -18,6 +19,7 @@ class AppRoutes {
   static const home = '/';
   static const productDetail = '/product';
   static const saved = '/saved';
+  static const cart = '/cart';
   static const profile = '/profile';
   static const personalDetails = '/profile/personal-details';
   static const myOrders = '/profile/my-orders';
@@ -39,6 +41,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.home,
       name: 'home',
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute( // <-- Tambahkan GoRoute ini
+      path: AppRoutes.cart,
+      name: 'cart',
+      builder: (context, state) => const CartScreen(),
     ),
     GoRoute(
       path: '${AppRoutes.productDetail}/:id',
