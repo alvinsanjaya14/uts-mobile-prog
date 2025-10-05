@@ -61,4 +61,20 @@ class ProductService {
     final products = await fetchProducts();
     return products.firstWhere((p) => p.id == id);
   }
+
+  /// Simulates fetching saved product IDs from local storage
+  Future<List<String>> fetchSavedProductIds() async {
+    await Future.delayed(const Duration(milliseconds: 150));
+    // Mock saved product IDs - in real app would come from SharedPreferences/DB
+    return ['1', '2']; // Sample saved product IDs
+  }
+
+  /// Fetches full product details for saved product IDs
+  Future<List<Product>> fetchSavedProducts() async {
+    final savedIds = await fetchSavedProductIds();
+    final allProducts = await fetchProducts();
+    
+    // Filter products by saved IDs
+    return allProducts.where((product) => savedIds.contains(product.id)).toList();
+  }
 }

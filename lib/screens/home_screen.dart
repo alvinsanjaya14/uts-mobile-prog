@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../controllers/product_controller.dart';
 import '../models/product.dart';
 import '../widgets/product_card.dart';
@@ -15,6 +16,7 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: Colors.white,
           body: SafeArea(
             child: Column(
+              spacing: 24,
               children: [
                 _buildSearchAndLocationBar(),
                 _buildCategories(),
@@ -32,7 +34,7 @@ class HomeScreen extends StatelessWidget {
                                 horizontal: 12.0,
                               ),
                               child: Column(
-                                spacing: 24,
+                                spacing: 20,
                                 children: [
                                   Row(
                                     spacing: 12,
@@ -90,7 +92,35 @@ class HomeScreen extends StatelessWidget {
                 label: 'Profile',
               ),
             ],
-            onTap: (i) {},
+            onTap: (index) {
+              switch (index) {
+                case 0:
+                  // Already on home screen
+                  break;
+                case 1:
+                  // Navigate to saved screen
+                  context.goNamed('saved');
+                  break;
+                case 2:
+                  // Browse - placeholder for future implementation
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Browse feature coming soon!')),
+                  );
+                  break;
+                case 3:
+                  // Cart - placeholder for future implementation
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Cart feature coming soon!')),
+                  );
+                  break;
+                case 4:
+                  // Profile - placeholder for future implementation
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Profile feature coming soon!')),
+                  );
+                  break;
+              }
+            },
           ),
         );
       },
@@ -143,7 +173,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildCategories() {
     return SizedBox(
-      height: 96,
+      height: 32,
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -351,7 +381,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildCategoryButton(IconData icon, String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.green[50],
         borderRadius: BorderRadius.circular(12),
@@ -368,7 +398,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildCategoryChip(String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(12),

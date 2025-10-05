@@ -3,11 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'models/product.dart';
 import 'screens/home_screen.dart';
 import 'screens/product_detail_screen.dart';
+import 'screens/saved_screen.dart';
 
 /// Centralized route names
 class AppRoutes {
   static const home = '/';
   static const productDetail = '/product';
+  static const saved = '/saved';
 }
 
 /// GoRouter configuration
@@ -32,6 +34,11 @@ final GoRouter appRouter = GoRouter(
           body: const Center(child: Text('Missing product data.')),
         );
       },
+    ),
+    GoRoute(
+      path: AppRoutes.saved,
+      name: 'saved',
+      builder: (context, state) => const SavedScreen(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(
