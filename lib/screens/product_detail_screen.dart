@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../controllers/cart_controller.dart';
+import '../routes.dart';
 import 'package:uts_mobile_restoran/widgets/circle_icon_button.dart';
 import 'package:uts_mobile_restoran/widgets/custom_button.dart';
 import '../models/product.dart';
@@ -140,7 +144,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       Text(
                         product.isAvailable ? 'Available now' : 'Unavailable',
                         style: TextStyle(
-                          color: product.isAvailable ? Colors.green : Colors.red,
+                          color: product.isAvailable
+                              ? Colors.green
+                              : Colors.red,
                         ),
                       ),
                     ],
@@ -193,7 +199,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -234,10 +240,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             Expanded(
               child: CustomButton.primary(
                 onPressed: () {
+                  // <-- GANTI LOGIKA DI SINI
+                  final cartController = context.read<CartController>();
+                  cartController.addItem(product, quantity);
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Reserved $quantity item(s)'),
+                      content: Text(
+                        'Added $quantity x ${product.name} to cart',
+                      ),
                       backgroundColor: Colors.green,
+                      action: SnackBarAction(
+                        label: 'VIEW CART',
+                        textColor: Colors.white,
+                        onPressed: () {
+                          context.go(AppRoutes.cart);
+                        },
+                      ),
                     ),
                   );
                 },
@@ -331,8 +350,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       }).toList(),
     );
   }
-
-
 
   String _getProductDescription(Product product) {
     // Generate description based on ingredients or provide default

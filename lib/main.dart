@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'controllers/cart_controller.dart'; // <-- Tambahkan import
 import 'controllers/product_controller.dart';
 import 'services/product_service.dart';
 import 'routes.dart';
@@ -17,6 +18,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => ProductController(ProductService())..loadProducts(),
+        ),
+        ChangeNotifierProvider( // <-- Tambahkan ini
+          create: (_) => CartController(),
         ),
       ],
       child: MaterialApp.router(
