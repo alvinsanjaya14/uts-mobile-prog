@@ -109,16 +109,7 @@ class ProductCard extends StatelessWidget {
           '08 - 10 pm',
           style: TextStyle(color: Colors.grey, fontSize: 12),
         ),
-        const SizedBox(width: 8),
-        const Icon(Icons.location_on, size: 14, color: Colors.grey),
-        const SizedBox(width: 6),
-        Expanded(
-          child: Text(
-            '0.8 mi',
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
+
       ],
     );
   }
@@ -232,16 +223,7 @@ class StaticProductCard extends StatelessWidget {
                 '08 - 10 pm',
                 style: TextStyle(color: Colors.grey, fontSize: 12),
               ),
-              SizedBox(width: 8),
-              Icon(Icons.location_on, size: 14, color: Colors.grey),
-              SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  '0.8 mi',
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
+
             ],
           ),
         ],
@@ -253,7 +235,6 @@ class StaticProductCard extends StatelessWidget {
 /// Horizontal row-style product card
 class ProductRowCard extends StatefulWidget {
   final Product product;
-  final String? location;
   final int? stockCount;
   final VoidCallback? onTap;
   final VoidCallback? onFavoriteToggle;
@@ -262,7 +243,6 @@ class ProductRowCard extends StatefulWidget {
   const ProductRowCard({
     super.key,
     required this.product,
-    this.location,
     this.stockCount,
     this.onTap,
     this.onFavoriteToggle,
@@ -359,30 +339,6 @@ class _ProductRowCardState extends State<ProductRowCard> {
           ),
         ),
         const SizedBox(height: 4),
-        if (widget.location != null) ...[
-          Row(
-            children: [
-              Icon(
-                Icons.location_on,
-                size: 14,
-                color: Colors.grey[600],
-              ),
-              const SizedBox(width: 2),
-              Expanded(
-                child: Text(
-                  widget.location!,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 2),
-        ],
         if (widget.product.rating > 0) ...[
           Row(
             mainAxisSize: MainAxisSize.min,

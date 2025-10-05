@@ -27,7 +27,6 @@ class ProductService {
           {'name': 'Fish', 'severity': 'high'},
           {'name': 'Eggs', 'severity': 'medium'},
         ],
-        restaurantId: 1,
       ),
       Product(
         id: '2',
@@ -52,7 +51,6 @@ class ProductService {
           {'name': 'Dairy', 'severity': 'high'},
           {'name': 'Eggs', 'severity': 'medium'},
         ],
-        restaurantId: 1,
       ),
       Product(
         id: '3',
@@ -76,7 +74,6 @@ class ProductService {
         allergens: [
           {'name': 'Dairy', 'severity': 'high'},
         ],
-        restaurantId: 2,
       ),
       Product(
         id: '4',
@@ -103,7 +100,6 @@ class ProductService {
           {'name': 'Eggs', 'severity': 'medium'},
           {'name': 'Fish', 'severity': 'medium'},
         ],
-        restaurantId: 3,
       ),
       Product(
         id: '5',
@@ -128,7 +124,6 @@ class ProductService {
           {'name': 'Dairy', 'severity': 'medium'},
           {'name': 'Gluten', 'severity': 'medium'},
         ],
-        restaurantId: 4,
       ),
       Product(
         id: '6',
@@ -152,7 +147,6 @@ class ProductService {
           {'name': 'Fish', 'severity': 'medium'},
           {'name': 'Gluten', 'severity': 'medium'},
         ],
-        restaurantId: 5,
       ),
       Product(
         id: '7',
@@ -176,7 +170,6 @@ class ProductService {
         allergens: [
           {'name': 'Fish', 'severity': 'high'},
         ],
-        restaurantId: 6,
       ),
       Product(
         id: '8',
@@ -199,7 +192,6 @@ class ProductService {
           {'name': 'Dairy', 'severity': 'high'},
           {'name': 'Gluten', 'severity': 'high'},
         ],
-        restaurantId: 1,
       ),
       Product(
         id: '9',
@@ -224,7 +216,6 @@ class ProductService {
           {'name': 'Dairy', 'severity': 'high'},
           {'name': 'Gluten', 'severity': 'medium'},
         ],
-        restaurantId: 7,
       ),
       Product(
         id: '10',
@@ -248,7 +239,6 @@ class ProductService {
           {'name': 'Eggs', 'severity': 'high'},
           {'name': 'Gluten', 'severity': 'medium'},
         ],
-        restaurantId: 8,
       ),
       Product(
         id: '11',
@@ -272,7 +262,6 @@ class ProductService {
           {'name': 'Gluten', 'severity': 'high'},
           {'name': 'Eggs', 'severity': 'medium'},
         ],
-        restaurantId: 9,
       ),
       Product(
         id: '12',
@@ -296,7 +285,6 @@ class ProductService {
         allergens: [
           {'name': 'Sesame', 'severity': 'medium'},
         ],
-        restaurantId: 10,
       ),
     ];
   }

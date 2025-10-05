@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               spacing: 24,
               children: [
-                _buildSearchAndLocationBar(),
+                _buildSearchBar(),
                 _buildCategories(),
                 Expanded(
                   child: RefreshIndicator(
@@ -75,7 +75,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchAndLocationBar() {
+  Widget _buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
       child: Container(
@@ -85,33 +85,12 @@ class HomeScreen extends StatelessWidget {
           color: Colors.grey[100],
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Row(
+        child: const Row(
           children: [
-            // Search section
-            const Icon(Icons.search, color: Colors.grey),
-            const SizedBox(width: 8),
-            const Expanded(
-              child: Text('Search', style: TextStyle(color: Colors.grey)),
-            ),
-            const SizedBox(width: 12),
-            // Location trailing element
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.green[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.location_on, color: Colors.green, size: 16),
-                  SizedBox(width: 4),
-                  Text(
-                    '48 N 5th St - 2mi',
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
+            Icon(Icons.search, color: Colors.grey),
+            SizedBox(width: 8),
+            Expanded(
+              child: Text('Search for dishes...', style: TextStyle(color: Colors.grey)),
             ),
           ],
         ),
@@ -146,7 +125,7 @@ class HomeScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Deals near you',
+          'Today\'s Deals',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         SizedBox(

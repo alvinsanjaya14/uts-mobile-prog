@@ -187,12 +187,10 @@ class _SavedScreenState extends State<SavedScreen> {
       itemBuilder: (context, index) {
         final product = controller.savedProducts[index];
         // Simulate some sample data for demonstration
-        final locations = ['Downtown', 'Uptown', 'City Center', 'Mall Plaza', 'Main Street'];
         final stockCounts = [3, 8, 1, 12, 5, 2, 15];
         
         return ProductRowCard(
           product: product,
-          location: locations[index % locations.length],
           stockCount: stockCounts[index % stockCounts.length],
           isFavorite: true, // Since these are saved products
           onFavoriteToggle: () {

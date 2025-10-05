@@ -11,7 +11,6 @@ class Product extends Equatable {
   final bool isAvailable;
   final List<Map<String, dynamic>> ingredients;
   final List<Map<String, dynamic>> allergens;
-  final int restaurantId;
   
   const Product({
     required this.id,
@@ -24,7 +23,6 @@ class Product extends Equatable {
     this.isAvailable = true,
     this.ingredients = const [],
     this.allergens = const [],
-    this.restaurantId = 0,
   });
 
   factory Product.fromMap(Map<String, dynamic> map) {
@@ -39,7 +37,6 @@ class Product extends Equatable {
       isAvailable: map['isAvailable'] ?? map['is_available'] ?? true,
       ingredients: _parseIngredients(map['ingredients']),
       allergens: _parseAllergens(map['allergens']),
-      restaurantId: map['restaurantId'] ?? map['restaurant_id'] ?? 0,
     );
   }
 
@@ -78,7 +75,6 @@ class Product extends Equatable {
     'isAvailable': isAvailable,
     'ingredients': ingredients,
     'allergens': allergens,
-    'restaurantId': restaurantId,
   };
 
   Product copyWith({
@@ -92,7 +88,6 @@ class Product extends Equatable {
     bool? isAvailable,
     List<Map<String, dynamic>>? ingredients,
     List<Map<String, dynamic>>? allergens,
-    int? restaurantId,
   }) {
     return Product(
       id: id ?? this.id,
@@ -105,7 +100,6 @@ class Product extends Equatable {
       isAvailable: isAvailable ?? this.isAvailable,
       ingredients: ingredients ?? this.ingredients,
       allergens: allergens ?? this.allergens,
-      restaurantId: restaurantId ?? this.restaurantId,
     );
   }
 
@@ -120,7 +114,6 @@ class Product extends Equatable {
     ratingCount, 
     isAvailable, 
     ingredients, 
-    allergens, 
-    restaurantId
+    allergens,
   ];
 }
