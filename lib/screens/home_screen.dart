@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../controllers/product_controller.dart';
 import '../models/product.dart';
-import '../widgets/product_card.dart';
 import '../widgets/bottom_navbar.dart';
+import '../widgets/product_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -51,14 +52,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Column(
                                 spacing: 20,
                                 children: [
-                                  const SizedBox(height: 20), // Top spacing
+                                  const SizedBox(),
                                   _buildPointsBanner(),
                                   _buildActionButtons(context),
-                                  _buildDealsSection(
+                                  _buildFavoriteMenuSection(
                                     context,
                                     controller.products,
                                   ),
-                                  _buildPopularItemsSection(context),
                                 ],
                               ),
                             ),
@@ -71,64 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
           bottomNavigationBar: const BottomNavbar(currentIndex: 0),
         );
       },
-    );
-  }
-
-  Widget _buildDealsSection(BuildContext context, List<Product> products) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Today\'s Deals',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-        SizedBox(
-          height: 180,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              ...products.map(
-                (p) => Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: ProductCard(product: p),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPopularItemsSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Popular items',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 180,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              StaticProductCard(
-                title: 'Fried rice',
-                price: '\$2.99',
-                isSmall: true,
-              ),
-              const SizedBox(width: 12),
-              StaticProductCard(
-                title: 'Rice desert',
-                price: '\$2.99',
-                isSmall: true,
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -275,9 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   child: const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
+                    child: CircularProgressIndicator(color: Colors.white),
                   ),
                 );
               },
@@ -335,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icons.shopping_cart,
             label: 'Order Now',
             onTap: () {
-              Navigator.pushNamed(context, '/browse');
+              context.goNamed('browse');
             },
           ),
         ),
@@ -345,12 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icons.event_seat,
             label: 'Reserve',
             onTap: () {
-              // Navigate to reservation screen
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Reservation feature coming soon!'),
-                ),
-              );
+              context.goNamed('browse');
             },
           ),
         ),
@@ -395,6 +330,63 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildFavoriteMenuSection(
+    BuildContext context,
+    List<Product> products,
+  ) {
+    // Get top-rated products (4.5+ rating) for favorites
+    final favoriteProducts = products
+        .where((product) => product.rating >= 4.5 && product.isAvailable)
+        .take(4)
+        .toList();
+
+    if (favoriteProducts.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Your Favorite Menu',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            TextButton(
+              onPressed: () {
+                context.goNamed('saved');
+              },
+              child: Text(
+                'View All',
+                style: TextStyle(
+                  color: const Color(0xFF0AA67B),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 200,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              ...favoriteProducts.map(
+                (product) => Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: ProductCard(product: product, isSmall: true),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

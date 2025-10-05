@@ -19,7 +19,7 @@ class ProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap ?? () => _navigateToProduct(context),
       child: Container(
-        width: isSmall ? 160 : 260,
+        width: isSmall ? 160 : MediaQuery.of(context).size.width,
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -88,31 +88,45 @@ class ProductCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
+          if (product.rating > 0) ...[
+            Row(
+              children: [
+                Icon(
+                  Icons.star,
+                  size: 14,
+                  color: Colors.amber[600],
+                ),
+                const SizedBox(width: 2),
+                Text(
+                  product.rating.toStringAsFixed(1),
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 12,
+                  ),
+                ),
+                if (product.ratingCount > 0) ...[
+                  Text(
+                    ' (${product.ratingCount})',
+                    style: TextStyle(
+                      color: Colors.grey[500],
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 4),
+          ],
           Text(
             '\$${product.price.toStringAsFixed(2)}',
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 6),
-          _buildProductMeta(),
         ],
       ),
     );
   }
 
-  Widget _buildProductMeta() {
-    return Row(
-      children: [
-        const Icon(Icons.access_time, size: 14, color: Colors.grey),
-        const SizedBox(width: 6),
-        const Text(
-          '08 - 10 pm',
-          style: TextStyle(color: Colors.grey, fontSize: 12),
-        ),
-
-      ],
-    );
-  }
 
   void _navigateToProduct(BuildContext context) {
     final id = product.id.isNotEmpty 
@@ -213,18 +227,6 @@ class StaticProductCard extends StatelessWidget {
           Text(
             price,
             style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 6),
-          Row(
-            children: const [
-              Icon(Icons.access_time, size: 14, color: Colors.grey),
-              SizedBox(width: 6),
-              Text(
-                '08 - 10 pm',
-                style: TextStyle(color: Colors.grey, fontSize: 12),
-              ),
-
-            ],
           ),
         ],
       ),
