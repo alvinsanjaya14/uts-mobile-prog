@@ -55,7 +55,6 @@ class ProfileScreen extends StatelessWidget {
 
             // Quick stats row
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _statCard('\$13', 'Wallet'),
                 _statCard('2', 'Orders'),
@@ -74,10 +73,25 @@ class ProfileScreen extends StatelessWidget {
                       context.push(AppRoutes.personalDetails);
                     },
                   ),
-                  _buildListTile('My Orders', onTap: () {}),
-                  _buildListTile('App notifications', onTap: () {}),
+                  _buildListTile(
+                    'My Orders',
+                    onTap: () {
+                      context.push(AppRoutes.myOrders);
+                    },
+                  ),
+                  _buildListTile(
+                    'App notifications',
+                    onTap: () {
+                      context.push(AppRoutes.notifications);
+                    },
+                  ),
                   _buildListTile('Help centre', onTap: () {}),
-                  _buildListTile('Privacy and data', onTap: () {}),
+                  _buildListTile(
+                    'Privacy and data',
+                    onTap: () {
+                      context.push(AppRoutes.privacy);
+                    },
+                  ),
                   _buildListTile('Terms and conditions', onTap: () {}),
                   const SizedBox(height: 12),
                   ElevatedButton(
