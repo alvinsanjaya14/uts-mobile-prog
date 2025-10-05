@@ -5,10 +5,10 @@ class EditPersonalFieldScreen extends StatefulWidget {
   final String initialValue;
 
   const EditPersonalFieldScreen({
-    Key? key,
+    super.key,
     required this.title,
     required this.initialValue,
-  }) : super(key: key);
+  });
 
   @override
   State<EditPersonalFieldScreen> createState() =>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../controllers/product_controller.dart';
 import '../widgets/product_card.dart';
@@ -109,42 +110,58 @@ class _SavedScreenState extends State<SavedScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.favorite_border,
-                size: 80,
-                color: Colors.grey[300],
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.bookmark_border,
+                  size: 48,
+                  color: Colors.grey[400],
+                ),
               ),
               const SizedBox(height: 24),
-              Text(
-                'No saved products yet',
+              const Text(
+                'You don\'t have anything saved',
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
                 ),
               ),
               const SizedBox(height: 12),
               Text(
-                'Products you save will appear here',
+                'Save your favorite items by tapping the\nheart icon on any product',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey[500],
+                  color: Colors.grey[600],
+                  height: 1.4,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
-              ElevatedButton.icon(
+              ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  context.goNamed('browse');
                 },
-                icon: const Icon(Icons.home),
-                label: const Text('Browse Products'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 0, 127, 95),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                child: const Text(
+                  'Start browsing',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -187,22 +204,25 @@ class _SavedScreenState extends State<SavedScreen> {
       itemBuilder: (context, index) {
         final product = controller.savedProducts[index];
         // Simulate some sample data for demonstration
-        final locations = ['Downtown', 'Uptown', 'City Center', 'Mall Plaza', 'Main Street'];
         final stockCounts = [3, 8, 1, 12, 5, 2, 15];
         
         return ProductRowCard(
           product: product,
-          location: locations[index % locations.length],
           stockCount: stockCounts[index % stockCounts.length],
           isFavorite: true, // Since these are saved products
-          onFavoriteToggle: () {
-            // Handle favorite toggle - for now just show a snackbar
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${product.name} removed from favorites'),
-                duration: const Duration(seconds: 2),
-              ),
-            );
+          onFavoriteToggle: () async {
+            // Remove from favorites using the controller
+            await context.read<ProductController>().toggleProductSaved(product);
+            
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${product.name} removed from saved items'),
+                  duration: const Duration(seconds: 2),
+                  backgroundColor: Colors.grey[800],
+                ),
+              );
+            }
           },
         );
       },

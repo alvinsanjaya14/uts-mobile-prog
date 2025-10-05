@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'controllers/cart_controller.dart'; // <-- Tambahkan import
 import 'controllers/product_controller.dart';
-import 'controllers/restaurant_controller.dart';
 import 'services/product_service.dart';
-import 'services/restaurant_service.dart';
 import 'routes.dart';
 
 void main() {
@@ -20,9 +18,6 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => ProductController(ProductService())..loadProducts(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => RestaurantController(RestaurantService())..loadRestaurants(),
         ),
         ChangeNotifierProvider( // <-- Tambahkan ini
           create: (_) => CartController(),

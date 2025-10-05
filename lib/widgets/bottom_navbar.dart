@@ -47,12 +47,9 @@ class BottomNavbar extends StatelessWidget {
             }
             break;
           case 2:
-            // Browse - placeholder for future implementation
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Browse feature coming soon!'),
-              ),
-            );
+            if (currentIndex != 2) {
+              context.goNamed('browse');
+            }
             break;
           case 3:
             if (currentIndex != 3) {

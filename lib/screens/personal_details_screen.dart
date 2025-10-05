@@ -4,7 +4,7 @@ import 'edit_personal_field_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PersonalDetailsScreen extends StatefulWidget {
-  const PersonalDetailsScreen({Key? key}) : super(key: key);
+  const PersonalDetailsScreen({super.key});
 
   @override
   State<PersonalDetailsScreen> createState() => _PersonalDetailsScreenState();

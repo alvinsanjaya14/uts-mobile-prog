@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import '../models/product.dart';
+import '../controllers/product_controller.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -19,7 +21,7 @@ class ProductCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap ?? () => _navigateToProduct(context),
       child: Container(
-        width: isSmall ? 160 : 260,
+        width: isSmall ? 160 : MediaQuery.of(context).size.width,
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -88,40 +90,45 @@ class ProductCard extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
+          if (product.rating > 0) ...[
+            Row(
+              children: [
+                Icon(
+                  Icons.star,
+                  size: 14,
+                  color: Colors.amber[600],
+                ),
+                const SizedBox(width: 2),
+                Text(
+                  product.rating.toStringAsFixed(1),
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 12,
+                  ),
+                ),
+                if (product.ratingCount > 0) ...[
+                  Text(
+                    ' (${product.ratingCount})',
+                    style: TextStyle(
+                      color: Colors.grey[500],
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 4),
+          ],
           Text(
             '\$${product.price.toStringAsFixed(2)}',
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 6),
-          _buildProductMeta(),
         ],
       ),
     );
   }
 
-  Widget _buildProductMeta() {
-    return Row(
-      children: [
-        const Icon(Icons.access_time, size: 14, color: Colors.grey),
-        const SizedBox(width: 6),
-        const Text(
-          '08 - 10 pm',
-          style: TextStyle(color: Colors.grey, fontSize: 12),
-        ),
-        const SizedBox(width: 8),
-        const Icon(Icons.location_on, size: 14, color: Colors.grey),
-        const SizedBox(width: 6),
-        Expanded(
-          child: Text(
-            '0.8 mi',
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
 
   void _navigateToProduct(BuildContext context) {
     final id = product.id.isNotEmpty 
@@ -223,27 +230,6 @@ class StaticProductCard extends StatelessWidget {
             price,
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 6),
-          Row(
-            children: const [
-              Icon(Icons.access_time, size: 14, color: Colors.grey),
-              SizedBox(width: 6),
-              Text(
-                '08 - 10 pm',
-                style: TextStyle(color: Colors.grey, fontSize: 12),
-              ),
-              SizedBox(width: 8),
-              Icon(Icons.location_on, size: 14, color: Colors.grey),
-              SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  '0.8 mi',
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );
@@ -253,20 +239,18 @@ class StaticProductCard extends StatelessWidget {
 /// Horizontal row-style product card
 class ProductRowCard extends StatefulWidget {
   final Product product;
-  final String? location;
   final int? stockCount;
   final VoidCallback? onTap;
   final VoidCallback? onFavoriteToggle;
-  final bool isFavorite;
+  final bool? isFavorite; // Make nullable for auto-detection
 
   const ProductRowCard({
     super.key,
     required this.product,
-    this.location,
     this.stockCount,
     this.onTap,
     this.onFavoriteToggle,
-    this.isFavorite = false,
+    this.isFavorite, // Auto-detect if null
   });
 
   @override
@@ -274,6 +258,28 @@ class ProductRowCard extends StatefulWidget {
 }
 
 class _ProductRowCardState extends State<ProductRowCard> {
+  bool? _isFavorite;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.isFavorite;
+    if (_isFavorite == null) {
+      _checkIfSaved();
+    }
+  }
+
+  Future<void> _checkIfSaved() async {
+    if (mounted) {
+      final isCurrentlySaved = await context.read<ProductController>().isProductSaved(widget.product.id);
+      if (mounted) {
+        setState(() {
+          _isFavorite = isCurrentlySaved;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -359,30 +365,6 @@ class _ProductRowCardState extends State<ProductRowCard> {
           ),
         ),
         const SizedBox(height: 4),
-        if (widget.location != null) ...[
-          Row(
-            children: [
-              Icon(
-                Icons.location_on,
-                size: 14,
-                color: Colors.grey[600],
-              ),
-              const SizedBox(width: 2),
-              Expanded(
-                child: Text(
-                  widget.location!,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 2),
-        ],
         if (widget.product.rating > 0) ...[
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -422,10 +404,32 @@ class _ProductRowCardState extends State<ProductRowCard> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         IconButton(
-          onPressed: widget.onFavoriteToggle,
+          onPressed: () async {
+            if (widget.onFavoriteToggle != null) {
+              widget.onFavoriteToggle!();
+            } else {
+              // Handle favorite toggle ourselves
+              await context.read<ProductController>().toggleProductSaved(widget.product);
+              await _checkIfSaved(); // Refresh the saved state
+              
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      (_isFavorite ?? false)
+                        ? '${widget.product.name} added to saved items'
+                        : '${widget.product.name} removed from saved items',
+                    ),
+                    duration: const Duration(seconds: 2),
+                    backgroundColor: Colors.grey[800],
+                  ),
+                );
+              }
+            }
+          },
           icon: Icon(
-            widget.isFavorite ? Icons.favorite : Icons.favorite_border,
-            color: widget.isFavorite 
+            (_isFavorite ?? false) ? Icons.favorite : Icons.favorite_border,
+            color: (_isFavorite ?? false)
                 ? Colors.red[400] 
                 : Colors.grey[400],
             size: 24,
