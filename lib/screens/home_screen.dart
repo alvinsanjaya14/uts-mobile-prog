@@ -78,43 +78,43 @@ class HomeScreen extends StatelessWidget {
   Widget _buildSearchAndLocationBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              height: 44,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Container(
+        height: 44,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            // Search section
+            const Icon(Icons.search, color: Colors.grey),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Text('Search', style: TextStyle(color: Colors.grey)),
+            ),
+            const SizedBox(width: 12),
+            // Location trailing element
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
+                color: Colors.green[50],
+                borderRadius: BorderRadius.circular(8),
               ),
               child: const Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.search, color: Colors.grey),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text('Search', style: TextStyle(color: Colors.grey)),
+                  Icon(Icons.location_on, color: Colors.green, size: 16),
+                  SizedBox(width: 4),
+                  Text(
+                    '48 N 5th St - 2mi',
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.green[50],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.location_on, color: Colors.green),
-                SizedBox(width: 6),
-                Text('48 N 5th St - 2mi', style: TextStyle(fontSize: 12)),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
