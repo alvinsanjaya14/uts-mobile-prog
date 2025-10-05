@@ -35,10 +35,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             expandedHeight: MediaQuery.of(context).size.height * 0.3,
             pinned: true,
             backgroundColor: Colors.white,
-            elevation: 0,
-            leading: CircleIconButton.filled(
-              icon: Icons.arrow_back,
-              onPressed: () => Navigator.pop(context),
+            leading: Container(
+              padding: const EdgeInsets.all(4.0),
+              child: CircleIconButton.filled(
+                icon: Icons.arrow_back,
+                onPressed: () => Navigator.pop(context),
+              ),
             ),
             actions: [
               CircleIconButton.filled(
