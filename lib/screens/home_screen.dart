@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../controllers/product_controller.dart';
@@ -104,7 +105,9 @@ class HomeScreen extends StatelessWidget {
                 case 2:
                   // Browse - placeholder for future implementation
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Browse feature coming soon!')),
+                    const SnackBar(
+                      content: Text('Browse feature coming soon!'),
+                    ),
                   );
                   break;
                 case 3:
@@ -114,9 +117,11 @@ class HomeScreen extends StatelessWidget {
                   );
                   break;
                 case 4:
-                  // Profile - placeholder for future implementation
+                  context.goNamed('profile');
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Profile feature coming soon!')),
+                    const SnackBar(
+                      content: Text('Profile feature coming soon!'),
+                    ),
                   );
                   break;
               }

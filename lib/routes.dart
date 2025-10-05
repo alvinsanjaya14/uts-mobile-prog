@@ -4,12 +4,14 @@ import 'models/product.dart';
 import 'screens/home_screen.dart';
 import 'screens/product_detail_screen.dart';
 import 'screens/saved_screen.dart';
+import 'screens/profile_screen.dart';
 
 /// Centralized route names
 class AppRoutes {
   static const home = '/';
   static const productDetail = '/product';
   static const saved = '/saved';
+  static const profile = '/profile';
 }
 
 /// GoRouter configuration
@@ -39,6 +41,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.saved,
       name: 'saved',
       builder: (context, state) => const SavedScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.profile,
+      name: 'profile',
+      builder: (context, state) => const ProfileScreen(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(
