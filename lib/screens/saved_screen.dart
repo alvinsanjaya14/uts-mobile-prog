@@ -38,7 +38,6 @@ class _SavedScreenState extends State<SavedScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            centerTitle: true,
           ),
           body: RefreshIndicator(
             onRefresh: controller.loadSavedProducts,
@@ -159,39 +158,54 @@ class _SavedScreenState extends State<SavedScreen> {
   Widget _buildSavedProductsList(ProductController controller) {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '${controller.savedProducts.length} saved ${controller.savedProducts.length == 1 ? 'product' : 'products'}',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Text(
+              '${controller.savedProducts.length} saved ${controller.savedProducts.length == 1 ? 'product' : 'products'}',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-          const SizedBox(height: 16),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.75,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-            ),
-            itemCount: controller.savedProducts.length,
-            itemBuilder: (context, index) {
-              final product = controller.savedProducts[index];
-              return ProductCard(
-                product: product,
-                isSmall: false,
-              );
-            },
-          ),
+          _buildListView(controller),
         ],
       ),
+    );
+  }
+
+  Widget _buildListView(ProductController controller) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: controller.savedProducts.length,
+      itemBuilder: (context, index) {
+        final product = controller.savedProducts[index];
+        // Simulate some sample data for demonstration
+        final locations = ['Downtown', 'Uptown', 'City Center', 'Mall Plaza', 'Main Street'];
+        final stockCounts = [3, 8, 1, 12, 5, 2, 15];
+        
+        return ProductRowCard(
+          product: product,
+          location: locations[index % locations.length],
+          stockCount: stockCounts[index % stockCounts.length],
+          isFavorite: true, // Since these are saved products
+          onFavoriteToggle: () {
+            // Handle favorite toggle - for now just show a snackbar
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${product.name} removed from favorites'),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

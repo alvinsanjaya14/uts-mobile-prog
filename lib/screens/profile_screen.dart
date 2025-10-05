@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:uts_mobile_restoran/routes.dart';
 import '../widgets/bottom_navbar.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +71,7 @@ class ProfileScreen extends StatelessWidget {
                   _buildListTile(
                     'Personal details',
                     onTap: () {
-                      context.push('/profile/personal-details');
+                      context.push(AppRoutes.personalDetails);
                     },
                   ),
                   _buildListTile('My Orders', onTap: () {}),
