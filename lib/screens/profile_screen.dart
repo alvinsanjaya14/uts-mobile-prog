@@ -66,7 +66,12 @@ class ProfileScreen extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  _buildListTile('Personal details', onTap: () {}),
+                  _buildListTile(
+                    'Personal details',
+                    onTap: () {
+                      context.push('/profile/personal-details');
+                    },
+                  ),
                   _buildListTile('My Orders', onTap: () {}),
                   _buildListTile('App notifications', onTap: () {}),
                   _buildListTile('Help centre', onTap: () {}),
