@@ -27,6 +27,9 @@ class AppRoutes {
   static const helpContact = '/help/contact';
   static const helpCancel = '/help/cancel-order';
   static const helpCollection = '/help/collection-time';
+  static const helpHowItWorks = '/help/how-it-works';
+  static const helpJoin = '/help/join';
+  static const terms = '/profile/terms';
 }
 
 /// GoRouter configuration
@@ -56,6 +59,24 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.saved,
       name: 'saved',
       builder: (context, state) => const SavedScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.helpHowItWorks,
+      name: 'help-how-it-works',
+      builder: (context, state) => const HelpDetailScreen(
+        title: 'How Bitedeal work',
+        content:
+            'Bitedeal connects customers with local restaurants and shops offering surplus or discounted meals. Browse deals, place an order for pickup, and enjoy tasty food at a great price. Restaurants list limited-time offers and collection windows; once available, customers can claim and collect within the specified timeframe.',
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.helpJoin,
+      name: 'help-join',
+      builder: (context, state) => const HelpDetailScreen(
+        title: 'Join us',
+        content:
+            'Interested in partnering with Bitedeal? Join our network to reach new customers and reduce food waste. Register your business, list surplus meals or special offers, and manage collections through our simple dashboard. Get in touch to learn more about onboarding and benefits.',
+      ),
     ),
     GoRoute(
       path: AppRoutes.profile,
@@ -110,6 +131,15 @@ final GoRouter appRouter = GoRouter(
         title: 'Collection time',
         content:
             'You can cancel up to 2 hours before the start of your collection time by going to your order.\n\nThis ensures that the food can be saved by someone else.',
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.terms,
+      name: 'terms',
+      builder: (context, state) => const HelpDetailScreen(
+        title: 'Terms and conditions',
+        content:
+            'By using Bitedeal, you agree to our terms and conditions. This includes acceptance of our privacy policy, order and collection policies, and the rules governing promotions and refunds. Bitedeal is a marketplace connecting customers and restaurants; we are not responsible for the content provided by restaurants. For detailed legal terms, please review the full policy on our website or contact support for clarifications.',
       ),
     ),
   ],

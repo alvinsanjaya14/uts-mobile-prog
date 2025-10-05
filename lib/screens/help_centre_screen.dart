@@ -28,7 +28,7 @@ class HelpCentreScreen extends StatelessWidget {
           ListTile(
             title: const Text('How Bitedeal work'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {},
+            onTap: () => context.push('/help/how-it-works'),
           ),
           const Divider(height: 1),
           ListTile(
@@ -46,7 +46,7 @@ class HelpCentreScreen extends StatelessWidget {
           ListTile(
             title: const Text('Join us'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {},
+            onTap: () => context.push('/help/join'),
           ),
         ],
       ),
