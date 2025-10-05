@@ -74,8 +74,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
-
   Widget _buildDealsSection(BuildContext context, List<Product> products) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,8 +99,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-
 
   Widget _buildPopularItemsSection(BuildContext context) {
     return Column(
@@ -135,8 +131,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-
 
   Widget _buildPointsBanner() {
     return Container(
@@ -191,7 +185,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Stack(
       children: [
         SizedBox(
-          height: 250 + MediaQuery.of(context).padding.top, // Add status bar height
+          height:
+              250 + MediaQuery.of(context).padding.top, // Add status bar height
           width: double.infinity,
           child: PageView(
             controller: _pageController,
@@ -204,17 +199,17 @@ class _HomeScreenState extends State<HomeScreen> {
               _buildBannerItem(
                 'Special Offer',
                 'Get 20% off on all items',
-                const Color(0xFF0AA67B),
+                'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=400&fit=crop',
               ),
               _buildBannerItem(
                 'New Menu',
                 'Try our latest dishes',
-                const Color(0xFFE91E63),
+                'https://insanelygoodrecipes.com/wp-content/uploads/2020/12/Homemade-Ground-Beef-Lasagna.png',
               ),
               _buildBannerItem(
                 'Happy Hour',
                 'Enjoy discounts from 3-6 PM',
-                const Color(0xFFFF9800),
+                'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&h=400&fit=crop',
               ),
             ],
           ),
@@ -234,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: index == _currentBannerIndex 
+                  color: index == _currentBannerIndex
                       ? Colors.white
                       : Colors.white54,
                 ),
@@ -246,49 +241,61 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildBannerItem(String title, String subtitle, Color primaryColor) {
+  Widget _buildBannerItem(String title, String subtitle, String imageUrl) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [primaryColor, primaryColor.withOpacity(0.8)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
+      decoration: const BoxDecoration(),
       child: Stack(
         children: [
-          // Background with subtle pattern
-          SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: Stack(
-              children: [
-                // Subtle pattern
-                Positioned.fill(
-                  child: Opacity(
-                    opacity: 0.1,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/pattern.png'),
-                          repeat: ImageRepeat.repeat,
-                        ),
-                      ),
+          // Background image
+          Positioned.fill(
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback gradient if image fails to load
+                return Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF0AA67B), Color(0xFF39BFA0)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
                   ),
-                ),
-                // Decorative icon
-                const Positioned(
-                  top: 16,
-                  right: 16,
-                  child: Icon(
-                    Icons.restaurant_menu,
-                    size: 40,
-                    color: Colors.white24,
+                );
+              },
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF0AA67B), Color(0xFF39BFA0)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                   ),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          // Dark overlay for better text readability
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.black.withOpacity(0.3),
+                    Colors.black.withOpacity(0.1),
+                  ],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
                 ),
-              ],
+              ),
             ),
           ),
           // Content overlay
@@ -310,10 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 8),
                 Text(
                   subtitle,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
-                  ),
+                  style: const TextStyle(color: Colors.white70, fontSize: 16),
                 ),
               ],
             ),
@@ -377,11 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: const Color(0xFF0AA67B),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                icon,
-                size: 32,
-                color: Colors.white,
-              ),
+              child: Icon(icon, size: 32, color: Colors.white),
             ),
             const SizedBox(height: 12),
             Text(
@@ -397,6 +397,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-
 }
