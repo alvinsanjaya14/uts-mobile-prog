@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../controllers/product_controller.dart';
 import '../models/product.dart';
 import '../widgets/product_card.dart';
+import '../widgets/bottom_navbar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -16,6 +16,7 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: Colors.white,
           body: SafeArea(
             child: Column(
+              spacing: 24,
               children: [
                 _buildSearchAndLocationBar(),
                 _buildCategories(),
@@ -33,7 +34,7 @@ class HomeScreen extends StatelessWidget {
                                 horizontal: 12.0,
                               ),
                               child: Column(
-                                spacing: 24,
+                                spacing: 20,
                                 children: [
                                   Row(
                                     spacing: 12,
@@ -68,36 +69,7 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            currentIndex: 0,
-            selectedItemColor: Colors.green[700],
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite_border),
-                label: 'Saved',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                label: 'Browse',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_bag_outlined),
-                label: 'Cart',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline),
-                label: 'Profile',
-              ),
-            ],
-            onTap: (i) {
-              if (i == 4) {
-                // Profile
-                context.go('/profile');
-              }
-            },
-          ),
+          bottomNavigationBar: const BottomNavbar(currentIndex: 0),
         );
       },
     );
@@ -149,7 +121,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildCategories() {
     return SizedBox(
-      height: 96,
+      height: 32,
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -357,7 +329,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildCategoryButton(IconData icon, String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.green[50],
         borderRadius: BorderRadius.circular(12),
@@ -374,7 +346,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildCategoryChip(String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(12),
