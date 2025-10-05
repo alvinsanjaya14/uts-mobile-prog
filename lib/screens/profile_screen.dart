@@ -97,7 +97,12 @@ class ProfileScreen extends StatelessWidget {
                       context.push(AppRoutes.privacy);
                     },
                   ),
-                  _buildListTile('Terms and conditions', onTap: () {}),
+                  _buildListTile(
+                    'Terms and conditions',
+                    onTap: () {
+                      context.push(AppRoutes.terms);
+                    },
+                  ),
                   const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () {},
