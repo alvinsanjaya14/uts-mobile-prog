@@ -4,6 +4,7 @@ import 'models/product.dart';
 import 'screens/home_screen.dart';
 import 'screens/product_detail_screen.dart';
 import 'screens/saved_screen.dart';
+import 'screens/browse_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/personal_details_screen.dart';
 
@@ -12,6 +13,7 @@ class AppRoutes {
   static const home = '/';
   static const productDetail = '/product';
   static const saved = '/saved';
+  static const browse = '/browse';
   static const profile = '/profile';
   static const personalDetails = '/profile/personal-details';
 }
@@ -43,6 +45,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.saved,
       name: 'saved',
       builder: (context, state) => const SavedScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.browse,
+      name: 'browse',
+      builder: (context, state) => const BrowseScreen(),
     ),
     GoRoute(
       path: AppRoutes.profile,

@@ -8,17 +8,23 @@ class ProductController extends ChangeNotifier {
 
   List<Product> _products = [];
   List<Product> _savedProducts = [];
+  List<Product> _searchResults = [];
   bool _loading = false;
   bool _savedLoading = false;
+  bool _searchLoading = false;
   String? _error;
   String? _savedError;
+  String? _searchError;
 
   List<Product> get products => _products;
   List<Product> get savedProducts => _savedProducts;
+  List<Product> get searchResults => _searchResults;
   bool get isLoading => _loading;
   bool get isSavedLoading => _savedLoading;
+  bool get isSearchLoading => _searchLoading;
   String? get error => _error;
   String? get savedError => _savedError;
+  String? get searchError => _searchError;
 
   Future<void> loadProducts() async {
     _loading = true;
@@ -46,5 +52,25 @@ class ProductController extends ChangeNotifier {
       _savedLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> searchProducts(String query) async {
+    _searchLoading = true;
+    _searchError = null;
+    notifyListeners();
+    try {
+      _searchResults = await _service.searchProducts(query);
+    } catch (e) {
+      _searchError = e.toString();
+    } finally {
+      _searchLoading = false;
+      notifyListeners();
+    }
+  }
+
+  void clearSearchResults() {
+    _searchResults = [];
+    _searchError = null;
+    notifyListeners();
   }
 }
