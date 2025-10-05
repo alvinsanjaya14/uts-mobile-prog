@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../controllers/product_controller.dart';
 import '../models/product.dart';
 import '../widgets/product_card.dart';
+import '../widgets/bottom_navbar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -69,63 +69,7 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            currentIndex: 0,
-            selectedItemColor: Colors.green[700],
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite_border),
-                label: 'Saved',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                label: 'Browse',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_bag_outlined),
-                label: 'Cart',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline),
-                label: 'Profile',
-              ),
-            ],
-            onTap: (index) {
-              switch (index) {
-                case 0:
-                  // Already on home screen
-                  break;
-                case 1:
-                  // Navigate to saved screen
-                  context.goNamed('saved');
-                  break;
-                case 2:
-                  // Browse - placeholder for future implementation
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Browse feature coming soon!'),
-                    ),
-                  );
-                  break;
-                case 3:
-                  // Cart - placeholder for future implementation
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Cart feature coming soon!')),
-                  );
-                  break;
-                case 4:
-                  context.goNamed('profile');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Profile feature coming soon!'),
-                    ),
-                  );
-                  break;
-              }
-            },
-          ),
+          bottomNavigationBar: const BottomNavbar(currentIndex: 0),
         );
       },
     );

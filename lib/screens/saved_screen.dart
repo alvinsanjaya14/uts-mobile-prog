@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controllers/product_controller.dart';
 import '../widgets/product_card.dart';
+import '../widgets/bottom_navbar.dart';
 
 class SavedScreen extends StatefulWidget {
   const SavedScreen({super.key});
@@ -49,6 +50,7 @@ class _SavedScreenState extends State<SavedScreen> {
                         ? _buildEmptyState()
                         : _buildSavedProductsList(controller),
           ),
+          bottomNavigationBar: const BottomNavbar(currentIndex: 1),
         );
       },
     );
