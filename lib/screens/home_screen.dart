@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 import '../controllers/product_controller.dart';
 import '../models/product.dart';
+import '../widgets/product_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,42 +24,44 @@ class HomeScreen extends StatelessWidget {
                     child: controller.isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : controller.error != null
-                            ? Center(child: Text(controller.error!))
-                            : SingleChildScrollView(
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(height: 8),
-                                      // Pick today / tomorrow toggle (static for now)
-                                      Row(
-                                        children: const [
-                                          Text(
-                                            'Pick today',
-                                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                          ),
-                                          SizedBox(width: 12),
-                                          Text('Pick tomorrow', style: TextStyle(color: Colors.grey)),
-                                        ],
+                        ? Center(child: Text(controller.error!))
+                        : SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                              ),
+                              child: Column(
+                                spacing: 24,
+                                children: [
+                                  Row(
+                                    spacing: 12,
+                                    children: const [
+                                      Text(
+                                        'Pick today',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                      const SizedBox(height: 12),
-                                      // Deals near you (dynamic via controller)
-                                      _buildDealsSection(context, controller.products),
-                                      const SizedBox(height: 16),
-                                      _buildPointsBanner(),
-                                      const SizedBox(height: 18),
-                                      _buildExpiringSoonSection(context),
-                                      const SizedBox(height: 18),
-                                      _buildPopularItemsSection(context),
-                                      const SizedBox(height: 18),
-                                      _buildPromoCard(),
-                                      const SizedBox(height: 80),
+                                      Text(
+                                        'Pick tomorrow',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
                                     ],
                                   ),
-                                ),
+                                  _buildDealsSection(
+                                    context,
+                                    controller.products,
+                                  ),
+                                  _buildPointsBanner(),
+                                  _buildExpiringSoonSection(context),
+                                  _buildPopularItemsSection(context),
+                                  _buildPromoCard(),
+                                ],
                               ),
+                            ),
+                          ),
                   ),
                 ),
               ],
@@ -71,10 +73,22 @@ class HomeScreen extends StatelessWidget {
             selectedItemColor: Colors.green[700],
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-              BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: 'Saved'),
-              BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Browse'),
-              BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), label: 'Cart'),
-              BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite_border),
+                label: 'Saved',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.search),
+                label: 'Browse',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_bag_outlined),
+                label: 'Cart',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                label: 'Profile',
+              ),
             ],
             onTap: (i) {},
           ),
@@ -153,17 +167,21 @@ class HomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Deals near you', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
+        const Text(
+          'Deals near you',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
         SizedBox(
           height: 180,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              ...products.map((p) => Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: _buildDynamicFoodCard(context, p),
-                  )),
+              ...products.map(
+                (p) => Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: ProductCard(product: p),
+                ),
+              ),
             ],
           ),
         ),
@@ -175,16 +193,27 @@ class HomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Expiring soon', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        const Text(
+          'Expiring soon',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
         const SizedBox(height: 8),
         SizedBox(
-          height: 160,
+          height: 180,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              _buildStaticFoodCard(context, 'Alcapurrias', '\$6.99', small: true),
+              StaticProductCard(
+                title: 'Alcapurrias',
+                price: '\$6.99',
+                isSmall: true,
+              ),
               const SizedBox(width: 12),
-              _buildStaticFoodCard(context, 'Carrot–Harissa', '\$4.99', small: true),
+              StaticProductCard(
+                title: 'Carrot–Harissa',
+                price: '\$4.99',
+                isSmall: true,
+              ),
             ],
           ),
         ),
@@ -196,16 +225,27 @@ class HomeScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Popular items', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        const Text(
+          'Popular items',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
         const SizedBox(height: 8),
         SizedBox(
-          height: 160,
+          height: 180,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              _buildStaticFoodCard(context, 'Fried rice', '\$2.99', small: true),
+              StaticProductCard(
+                title: 'Fried rice',
+                price: '\$2.99',
+                isSmall: true,
+              ),
               const SizedBox(width: 12),
-              _buildStaticFoodCard(context, 'Rice desert', '\$2.99', small: true),
+              StaticProductCard(
+                title: 'Rice desert',
+                price: '\$2.99',
+                isSmall: true,
+              ),
             ],
           ),
         ),
@@ -229,11 +269,19 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  Text('Grab Happiness by the Bite!', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Grab Happiness by the Bite!',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   SizedBox(height: 8),
-                  Text('Your Ultimate Happy Hour Meal App for Delicious Deals!'),
+                  Text(
+                    'Your Ultimate Happy Hour Meal App for Delicious Deals!',
+                  ),
                   SizedBox(height: 12),
-                  ElevatedButton(onPressed: null, child: Text('Get Started now')),
+                  ElevatedButton(
+                    onPressed: null,
+                    child: Text('Get Started now'),
+                  ),
                 ],
               ),
             ),
@@ -244,135 +292,6 @@ class HomeScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 color: Colors.green[200],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Dynamic card for products coming from controller
-  Widget _buildDynamicFoodCard(BuildContext context, Product product) {
-    return GestureDetector(
-      onTap: () {
-        final id = product.id.isNotEmpty ? product.id : product.name.hashCode.toString();
-        context.push('/product/$id', extra: product);
-      },
-      child: Container(
-        width: 260,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 110,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-              ),
-              child: product.imageUrl == null
-                  ? const Center(child: Icon(Icons.image, size: 36, color: Colors.grey))
-                  : ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12),
-                      ),
-                      child: Image.network(product.imageUrl!, fit: BoxFit.cover),
-                    ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 6),
-                  Text('\$${product.price.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: const [
-                      Icon(Icons.access_time, size: 14, color: Colors.grey),
-                      SizedBox(width: 6),
-                      Text('08 - 10 pm', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      SizedBox(width: 8),
-                      Icon(Icons.location_on, size: 14, color: Colors.grey),
-                      SizedBox(width: 6),
-                      Text('0.8 mi', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Static card pattern reused for Expiring soon / Popular items
-  Widget _buildStaticFoodCard(BuildContext context, String title, String price, {bool small = false}) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: small ? 160 : 260,
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: small ? 80 : 110,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-              ),
-              child: const Center(child: Icon(Icons.image, size: 36, color: Colors.grey)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 6),
-                  Text(price, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: const [
-                      Icon(Icons.access_time, size: 14, color: Colors.grey),
-                      SizedBox(width: 6),
-                      Text('08 - 10 pm', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      SizedBox(width: 8),
-                      Icon(Icons.location_on, size: 14, color: Colors.grey),
-                      SizedBox(width: 6),
-                      Text('0.8 mi', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                    ],
-                  ),
-                ],
               ),
             ),
           ],
