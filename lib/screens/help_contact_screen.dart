@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class HelpContactScreen extends StatefulWidget {
-  const HelpContactScreen({Key? key}) : super(key: key);
+  const HelpContactScreen({super.key});
 
   @override
   State<HelpContactScreen> createState() => _HelpContactScreenState();
@@ -57,7 +57,7 @@ class _HelpContactScreenState extends State<HelpContactScreen> {
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(border: OutlineInputBorder()),
               hint: const Text('Choose a topic'),
-              value: _topic,
+              initialValue: _topic,
               items: _topics
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                   .toList(),
@@ -67,7 +67,7 @@ class _HelpContactScreenState extends State<HelpContactScreen> {
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(border: OutlineInputBorder()),
               hint: const Text('Select an order'),
-              value: _order,
+              initialValue: _order,
               items: const [
                 DropdownMenuItem(value: 'order1', child: Text('Order #1')),
               ],

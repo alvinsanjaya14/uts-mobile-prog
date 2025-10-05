@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrivacyAndDataScreen extends StatefulWidget {
-  const PrivacyAndDataScreen({Key? key}) : super(key: key);
+  const PrivacyAndDataScreen({super.key});
 
   @override
   State<PrivacyAndDataScreen> createState() => _PrivacyAndDataScreenState();

@@ -190,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBannerCarousel() {
     return Stack(
       children: [
-        Container(
+        SizedBox(
           height: 250 + MediaQuery.of(context).padding.top, // Add status bar height
           width: double.infinity,
           child: PageView(
@@ -259,7 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Stack(
         children: [
           // Background with subtle pattern
-          Container(
+          SizedBox(
             width: double.infinity,
             height: double.infinity,
             child: Stack(

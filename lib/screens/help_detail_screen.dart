@@ -8,12 +8,12 @@ class HelpDetailScreen extends StatelessWidget {
   final VoidCallback? action;
 
   const HelpDetailScreen({
-    Key? key,
+    super.key,
     required this.title,
     required this.content,
     this.actionLabel,
     this.action,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

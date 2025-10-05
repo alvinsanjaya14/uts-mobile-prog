@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationsScreen extends StatefulWidget {
-  const NotificationsScreen({Key? key}) : super(key: key);
+  const NotificationsScreen({super.key});
 
   @override
   State<NotificationsScreen> createState() => _NotificationsScreenState();
@@ -53,10 +53,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   void _toggleDay(int index) {
     setState(() {
-      if (_days.contains(index))
+      if (_days.contains(index)) {
         _days.remove(index);
-      else
+      } else {
         _days.add(index);
+      }
     });
     _saveDays();
   }

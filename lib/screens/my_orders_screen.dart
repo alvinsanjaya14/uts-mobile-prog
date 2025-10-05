@@ -4,7 +4,7 @@ import '../controllers/product_controller.dart';
 import '../widgets/product_card.dart';
 
 class MyOrdersScreen extends StatefulWidget {
-  const MyOrdersScreen({Key? key}) : super(key: key);
+  const MyOrdersScreen({super.key});
 
   @override
   State<MyOrdersScreen> createState() => _MyOrdersScreenState();
