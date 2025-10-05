@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../controllers/cart_controller.dart'; // <-- Pastikan ini ada
+import '../routes.dart'; 
 import 'package:uts_mobile_restoran/widgets/circle_icon_button.dart';
 import 'package:uts_mobile_restoran/widgets/custom_button.dart';
 import '../models/product.dart';
@@ -246,69 +249,80 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _buildBottomReservation(Product product) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
+Widget _buildBottomReservation(Product product) {
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 8,
+          offset: const Offset(0, -2),
+        ),
+      ],
+    ),
+    child: SafeArea(
+      child: Row(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: quantity > 1
+                      ? () => setState(() => quantity--)
+                      : null,
+                  icon: const Icon(Icons.remove),
+                  color: quantity > 1 ? Colors.black : Colors.grey,
+                ),
+                Text(
+                  quantity.toString(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => setState(() => quantity++),
+                  icon: const Icon(Icons.add),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: CustomButton.primary(
+              onPressed: () {
+                // <-- GANTI LOGIKA DI SINI
+                final cartController = context.read<CartController>();
+                cartController.addItem(product, quantity);
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Added $quantity x ${product.name} to cart'),
+                    backgroundColor: Colors.green,
+                    action: SnackBarAction(
+                      label: 'VIEW CART',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        context.go(AppRoutes.cart);
+                      },
+                    ),
+                  ),
+                );
+              },
+              text: 'Reserve now',
+            ),
           ),
         ],
       ),
-      child: SafeArea(
-        child: Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: quantity > 1
-                        ? () => setState(() => quantity--)
-                        : null,
-                    icon: const Icon(Icons.remove),
-                    color: quantity > 1 ? Colors.black : Colors.grey,
-                  ),
-                  Text(
-                    quantity.toString(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => setState(() => quantity++),
-                    icon: const Icon(Icons.add),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: CustomButton.primary(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Reserved $quantity item(s)'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                },
-                text: 'Reserve now',
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildExpandableSection(
     String title,
