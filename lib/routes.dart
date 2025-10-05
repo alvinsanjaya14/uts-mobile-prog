@@ -15,6 +15,7 @@ import 'screens/notifications_screen.dart';
 import 'screens/help_centre_screen.dart';
 import 'screens/help_contact_screen.dart';
 import 'screens/help_detail_screen.dart';
+import 'screens/payment_success_screen.dart';
 
 /// Centralized route names
 class AppRoutes {
@@ -36,6 +37,7 @@ class AppRoutes {
   static const helpHowItWorks = '/help/how-it-works';
   static const helpJoin = '/help/join';
   static const terms = '/profile/terms';
+  static const paymentSuccess = '/payment-success';
 }
 
 /// GoRouter configuration
@@ -163,6 +165,12 @@ final GoRouter appRouter = GoRouter(
         content:
             'By using Bitedeal, you agree to our terms and conditions. This includes acceptance of our privacy policy, order and collection policies, and the rules governing promotions and refunds. Bitedeal is a marketplace connecting customers and restaurants; we are not responsible for the content provided by restaurants. For detailed legal terms, please review the full policy on our website or contact support for clarifications.',
       ),
+    ),
+    GoRoute(
+      // <-- TAMBAHKAN BLOK INI
+      path: AppRoutes.paymentSuccess,
+      name: 'payment-success',
+      builder: (context, state) => const PaymentSuccessScreen(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(
