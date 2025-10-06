@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:uts_mobile_restoran/routes.dart';
+import '../controllers/product_controller.dart';
 import '../widgets/bottom_navbar.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -53,13 +55,19 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Quick stats row
-            Row(
-              children: [
-                _statCard('\$13', 'Wallet'),
-                _statCard('2', 'Orders'),
-                _statCard('11 lb', 'CO₂'),
-              ],
+            // Quick stats row (wallet/orders/co2). Orders count is read from ProductController
+            Consumer<ProductController>(
+              builder: (context, ctrl, _) {
+                final ordersCount =
+                    ctrl.newOrders.length + ctrl.pastOrders.length;
+                return Row(
+                  children: [
+                    _statCard('\$13', 'Wallet'),
+                    _statCard(ordersCount.toString(), 'Orders'),
+                    _statCard('11 lb', 'CO₂'),
+                  ],
+                );
+              },
             ),
 
             const SizedBox(height: 18),

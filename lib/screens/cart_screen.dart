@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:uts_mobile_restoran/widgets/custom_button.dart';
 
 import '../controllers/cart_controller.dart';
+import '../controllers/product_controller.dart';
 import '../models/cart_item.dart';
 import '../widgets/bottom_navbar.dart';
 import '../routes.dart';
@@ -23,9 +24,17 @@ class CartScreen extends StatelessWidget {
       builder: (BuildContext bc) {
         // Fungsi untuk menangani proses setelah pembayaran dipilih
         void handlePaymentSelection() {
-          // 1. Bersihkan keranjang belanja
+          // 1. Add each cart item as a new order so it appears in My Orders -> New orders
+          final productCtrl = Provider.of<ProductController>(
+            context,
+            listen: false,
+          );
+          for (final ci in cartController.items) {
+            productCtrl.addOrder(ci.product);
+          }
+          // 2. Bersihkan keranjang belanja
           cartController.clearCart();
-          // 2. Arahkan ke halaman sukses pembayaran
+          // 3. Arahkan ke halaman sukses pembayaran
           context.go(AppRoutes.paymentSuccess);
         }
 
@@ -39,15 +48,13 @@ class CartScreen extends StatelessWidget {
                 const Center(
                   child: Text(
                     'Select Payment Method',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: 24),
                 _buildPaymentMethodTile(
-                  assetPath: 'assets/paypal.png', // Anda perlu menambahkan gambar ini
+                  assetPath:
+                      'assets/paypal.png', // Anda perlu menambahkan gambar ini
                   title: 'PayPal',
                   onTap: handlePaymentSelection,
                 ),
@@ -59,8 +66,9 @@ class CartScreen extends StatelessWidget {
                   onTap: handlePaymentSelection,
                 ),
                 const Divider(),
-                 _buildPaymentMethodTile(
-                  assetPath: 'assets/apple_pay.png', // Anda perlu menambahkan gambar ini
+                _buildPaymentMethodTile(
+                  assetPath:
+                      'assets/apple_pay.png', // Anda perlu menambahkan gambar ini
                   title: 'Apple Pay',
                   onTap: handlePaymentSelection,
                 ),
@@ -90,7 +98,10 @@ class CartScreen extends StatelessWidget {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
       leading: leadingWidget,
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+      ),
       onTap: onTap,
     );
   }
@@ -145,10 +156,7 @@ class CartScreen extends StatelessWidget {
             const SizedBox(height: 16),
             const Text(
               'Your Cart is Empty',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             const Text(
@@ -193,13 +201,12 @@ class CartScreen extends StatelessWidget {
               width: 70,
               height: 70,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  Container(
-                    width: 70,
-                    height: 70,
-                    color: Colors.grey[200],
-                    child: const Icon(Icons.restaurant, color: Colors.grey),
-                  ),
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: 70,
+                height: 70,
+                color: Colors.grey[200],
+                child: const Icon(Icons.restaurant, color: Colors.grey),
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -229,19 +236,30 @@ class CartScreen extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.remove_circle_outline, color: Colors.grey),
-                onPressed: () => cartController.decrementItemQuantity(item.product.id),
+                icon: const Icon(
+                  Icons.remove_circle_outline,
+                  color: Colors.grey,
+                ),
+                onPressed: () =>
+                    cartController.decrementItemQuantity(item.product.id),
               ),
               Text(
                 item.quantity.toString(),
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
               IconButton(
-                icon: Icon(Icons.add_circle_outline, color: Theme.of(context).primaryColor),
-                onPressed: () => cartController.incrementItemQuantity(item.product.id),
+                icon: Icon(
+                  Icons.add_circle_outline,
+                  color: Theme.of(context).primaryColor,
+                ),
+                onPressed: () =>
+                    cartController.incrementItemQuantity(item.product.id),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
