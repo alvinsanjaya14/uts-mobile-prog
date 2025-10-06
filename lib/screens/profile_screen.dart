@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uts_mobile_restoran/routes.dart';
+import 'package:uts_mobile_restoran/screens/loginOrSignup_screen.dart';
 import '../widgets/bottom_navbar.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -105,7 +106,16 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Signed out successfully!")),
+                          );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AccountScreen()),
+                        );
+                      },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green[50],
                       foregroundColor: Colors.black,
@@ -117,7 +127,16 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Account deleted successfully!")),
+                          );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AccountScreen()),
+                        );
+                      },
                     child: const Text(
                       'Delete account',
                       style: TextStyle(color: Colors.red),
