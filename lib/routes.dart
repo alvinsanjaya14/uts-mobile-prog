@@ -16,10 +16,12 @@ import 'screens/help_centre_screen.dart';
 import 'screens/help_contact_screen.dart';
 import 'screens/help_detail_screen.dart';
 import 'screens/payment_success_screen.dart';
+import 'screens/loginOrSignup_screen.dart';
 
 /// Centralized route names
 class AppRoutes {
-  static const home = '/';
+  static const loginSignup = '/';
+  static const home = '/home';
   static const productDetail = '/product';
   static const saved = '/saved';
   static const browse = '/browse';
@@ -43,6 +45,11 @@ class AppRoutes {
 /// GoRouter configuration
 final GoRouter appRouter = GoRouter(
   routes: [
+    GoRoute(
+      path: AppRoutes.loginSignup,
+      name: 'loginSignup',
+      builder: (context, state) => const AccountScreen(),
+    ),
     GoRoute(
       path: AppRoutes.home,
       name: 'home',
