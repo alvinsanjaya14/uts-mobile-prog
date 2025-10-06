@@ -36,10 +36,7 @@ class ProductCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildProductImage(),
-            _buildProductInfo(),
-          ],
+          children: [_buildProductImage(), _buildProductInfo()],
         ),
       ),
     );
@@ -56,9 +53,7 @@ class ProductCard extends StatelessWidget {
         ),
       ),
       child: product.imageUrl == null
-          ? const Center(
-              child: Icon(Icons.image, size: 36, color: Colors.grey),
-            )
+          ? const Center(child: Icon(Icons.image, size: 36, color: Colors.grey))
           : ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),
@@ -94,26 +89,16 @@ class ProductCard extends StatelessWidget {
           if (product.rating > 0) ...[
             Row(
               children: [
-                Icon(
-                  Icons.star,
-                  size: 14,
-                  color: Colors.amber[600],
-                ),
+                Icon(Icons.star, size: 14, color: Colors.amber[600]),
                 const SizedBox(width: 2),
                 Text(
                   product.rating.toStringAsFixed(1),
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 ),
                 if (product.ratingCount > 0) ...[
                   Text(
                     ' (${product.ratingCount})',
-                    style: TextStyle(
-                      color: Colors.grey[500],
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: Colors.grey[500], fontSize: 12),
                   ),
                 ],
               ],
@@ -129,10 +114,9 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-
   void _navigateToProduct(BuildContext context) {
-    final id = product.id.isNotEmpty 
-        ? product.id 
+    final id = product.id.isNotEmpty
+        ? product.id
         : product.name.hashCode.toString();
     context.push('/product/$id', extra: product);
   }
@@ -165,16 +149,11 @@ class StaticProductCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: const [
-            BoxShadow(color: Colors.black12, blurRadius: 6),
-          ],
+          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6)],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildStaticImage(),
-            _buildStaticInfo(),
-          ],
+          children: [_buildStaticImage(), _buildStaticInfo()],
         ),
       ),
     );
@@ -191,9 +170,7 @@ class StaticProductCard extends StatelessWidget {
         ),
       ),
       child: imageUrl == null
-          ? const Center(
-              child: Icon(Icons.image, size: 36, color: Colors.grey),
-            )
+          ? const Center(child: Icon(Icons.image, size: 36, color: Colors.grey))
           : ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),
@@ -226,10 +203,7 @@ class StaticProductCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 6),
-          Text(
-            price,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
+          Text(price, style: const TextStyle(fontWeight: FontWeight.w600)),
         ],
       ),
     );
@@ -242,7 +216,9 @@ class ProductRowCard extends StatefulWidget {
   final int? stockCount;
   final VoidCallback? onTap;
   final VoidCallback? onFavoriteToggle;
+  final VoidCallback? onFinish;
   final bool? isFavorite; // Make nullable for auto-detection
+  final String? orderStatus;
 
   const ProductRowCard({
     super.key,
@@ -251,6 +227,8 @@ class ProductRowCard extends StatefulWidget {
     this.onTap,
     this.onFavoriteToggle,
     this.isFavorite, // Auto-detect if null
+    this.onFinish,
+    this.orderStatus,
   });
 
   @override
@@ -271,7 +249,9 @@ class _ProductRowCardState extends State<ProductRowCard> {
 
   Future<void> _checkIfSaved() async {
     if (mounted) {
-      final isCurrentlySaved = await context.read<ProductController>().isProductSaved(widget.product.id);
+      final isCurrentlySaved = await context
+          .read<ProductController>()
+          .isProductSaved(widget.product.id);
       if (mounted) {
         setState(() {
           _isFavorite = isCurrentlySaved;
@@ -321,9 +301,7 @@ class _ProductRowCardState extends State<ProductRowCard> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: widget.product.imageUrl == null
-          ? const Center(
-              child: Icon(Icons.image, size: 24, color: Colors.grey),
-            )
+          ? const Center(child: Icon(Icons.image, size: 24, color: Colors.grey))
           : ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.network(
@@ -348,10 +326,7 @@ class _ProductRowCardState extends State<ProductRowCard> {
       children: [
         Text(
           widget.product.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -369,26 +344,16 @@ class _ProductRowCardState extends State<ProductRowCard> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.star,
-                size: 14,
-                color: Colors.amber[600],
-              ),
+              Icon(Icons.star, size: 14, color: Colors.amber[600]),
               const SizedBox(width: 2),
               Text(
                 widget.product.rating.toStringAsFixed(1),
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
               ),
               if (widget.product.ratingCount > 0) ...[
                 Text(
                   ' (${widget.product.ratingCount})',
-                  style: TextStyle(
-                    color: Colors.grey[500],
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.grey[500], fontSize: 12),
                 ),
               ],
             ],
@@ -406,19 +371,28 @@ class _ProductRowCardState extends State<ProductRowCard> {
         IconButton(
           onPressed: () async {
             if (widget.onFavoriteToggle != null) {
+              // Optimistically flip local UI state so the heart changes immediately.
+              if (mounted) {
+                setState(() {
+                  _isFavorite = !(_isFavorite ?? false);
+                });
+              }
+              // Call parent-provided handler (e.g., to update controller/persistence)
               widget.onFavoriteToggle!();
             } else {
               // Handle favorite toggle ourselves
-              await context.read<ProductController>().toggleProductSaved(widget.product);
+              await context.read<ProductController>().toggleProductSaved(
+                widget.product,
+              );
               await _checkIfSaved(); // Refresh the saved state
-              
+
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
                       (_isFavorite ?? false)
-                        ? '${widget.product.name} added to saved items'
-                        : '${widget.product.name} removed from saved items',
+                          ? '${widget.product.name} added to saved items'
+                          : '${widget.product.name} removed from saved items',
                     ),
                     duration: const Duration(seconds: 2),
                     backgroundColor: Colors.grey[800],
@@ -429,16 +403,11 @@ class _ProductRowCardState extends State<ProductRowCard> {
           },
           icon: Icon(
             (_isFavorite ?? false) ? Icons.favorite : Icons.favorite_border,
-            color: (_isFavorite ?? false)
-                ? Colors.red[400] 
-                : Colors.grey[400],
+            color: (_isFavorite ?? false) ? Colors.red[400] : Colors.grey[400],
             size: 24,
           ),
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            minWidth: 32,
-            minHeight: 32,
-          ),
+          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
         ),
         const SizedBox(height: 8),
         if (widget.stockCount != null) ...[
@@ -474,6 +443,33 @@ class _ProductRowCardState extends State<ProductRowCard> {
             ),
           ),
         ],
+        if (widget.orderStatus != null) ...[
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.green[50],
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Text(
+              widget.orderStatus!,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+        if (widget.onFinish != null) ...[
+          const SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: widget.onFinish,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green[50],
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              elevation: 0,
+            ),
+            child: const Text('Finish'),
+          ),
+        ],
       ],
     );
   }
@@ -486,8 +482,8 @@ class _ProductRowCardState extends State<ProductRowCard> {
   }
 
   void _navigateToProduct(BuildContext context) {
-    final id = widget.product.id.isNotEmpty 
-        ? widget.product.id 
+    final id = widget.product.id.isNotEmpty
+        ? widget.product.id
         : widget.product.name.hashCode.toString();
     context.push('/product/$id', extra: widget.product);
   }

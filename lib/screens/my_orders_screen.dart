@@ -18,8 +18,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     super.initState();
     // ensure saved products are loaded if needed
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final ctrl = Provider.of<ProductController>(context, listen: false);
-      ctrl.loadSavedProducts();
+      // No longer automatically loading saved favorites here; orders are in-memory.
     });
   }
 
@@ -75,12 +74,8 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
           Expanded(
             child: Consumer<ProductController>(
               builder: (context, ctrl, _) {
-                final items = _tabIndex == 0
-                    ? ctrl.savedProducts
-                    : ctrl.products;
-                if (ctrl.isSavedLoading && _tabIndex == 0) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+                final items = _tabIndex == 0 ? ctrl.newOrders : ctrl.pastOrders;
+                // No loading indicator for orders (they are in-memory)
                 if (items.isEmpty) {
                   return Center(
                     child: Padding(
@@ -124,7 +119,45 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                     return ProductRowCard(
                       product: p,
                       onTap: () {},
-                      onFavoriteToggle: () {},
+                      onFavoriteToggle: () {
+                        // Toggle favorite and show snack — this keeps Saved screen in sync
+                        () async {
+                          final ctrl = Provider.of<ProductController>(
+                            context,
+                            listen: false,
+                          );
+                          final wasSaved = await ctrl.isProductSaved(p.id);
+                          await ctrl.toggleProductSaved(p);
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  wasSaved
+                                      ? '${p.name} removed from saved items'
+                                      : '${p.name} added to saved items',
+                                ),
+                                duration: const Duration(seconds: 2),
+                                backgroundColor: Colors.grey[800],
+                              ),
+                            );
+                          }
+                        }();
+                      },
+                      orderStatus: _tabIndex == 0 ? 'In delivery' : null,
+                      onFinish: _tabIndex == 0
+                          ? () {
+                              final ctrl = Provider.of<ProductController>(
+                                context,
+                                listen: false,
+                              );
+                              ctrl.markOrderAsPast(p);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Marked as finished'),
+                                ),
+                              );
+                            }
+                          : null,
                     );
                   },
                 );

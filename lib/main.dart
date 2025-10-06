@@ -17,9 +17,15 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => ProductController(ProductService())..loadProducts(),
+          create: (_) {
+            final ctrl = ProductController(ProductService());
+            ctrl.loadProducts();
+            ctrl.loadOrders();
+            return ctrl;
+          },
         ),
-        ChangeNotifierProvider( // <-- Tambahkan ini
+        ChangeNotifierProvider(
+          // <-- Tambahkan ini
           create: (_) => CartController(),
         ),
       ],
@@ -27,7 +33,9 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Restaurant App',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 0, 127, 95)),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 0, 127, 95),
+          ),
           scaffoldBackgroundColor: Colors.white,
           useMaterial3: true,
         ),
