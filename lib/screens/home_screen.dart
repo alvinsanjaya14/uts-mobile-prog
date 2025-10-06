@@ -64,10 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   const SizedBox(),
                                   _buildPointsBanner(),
                                   _buildActionButtons(context),
-                                  _buildMenuSection(
-                                    context,
-                                    controller,
-                                  ),
+                                  _buildMenuSection(context, controller),
                                 ],
                               ),
                             ),
@@ -150,17 +147,17 @@ class _HomeScreenState extends State<HomeScreen> {
               _buildBannerItem(
                 'Special Offer',
                 'Get 20% off on all items',
-                'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=400&fit=crop',
+                'assets/banner1.jpg',
               ),
               _buildBannerItem(
                 'New Menu',
                 'Try our latest dishes',
-                'https://insanelygoodrecipes.com/wp-content/uploads/2020/12/Homemade-Ground-Beef-Lasagna.png',
+                'assets/banner2.png',
               ),
               _buildBannerItem(
                 'Happy Hour',
                 'Enjoy discounts from 3-6 PM',
-                'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&h=400&fit=crop',
+                'assets/banner3.jpg',
               ),
             ],
           ),
@@ -200,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           // Background image
           Positioned.fill(
-            child: Image.network(
+            child: Image.asset(
               imageUrl,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
@@ -212,21 +209,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                  ),
-                );
-              },
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF0AA67B), Color(0xFF39BFA0)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child: const Center(
-                    child: CircularProgressIndicator(color: Colors.white),
                   ),
                 );
               },
@@ -342,13 +324,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMenuSection(
-    BuildContext context,
-    ProductController controller,
-  ) {
+  Widget _buildMenuSection(BuildContext context, ProductController controller) {
     // Check if user has saved products
     final hasSavedProducts = controller.savedProducts.isNotEmpty;
-    
+
     if (hasSavedProducts) {
       // Show saved products
       return _buildSavedMenuSection(context, controller.savedProducts);
@@ -392,12 +371,14 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              ...savedProducts.take(4).map(
-                (product) => Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: ProductCard(product: product, isSmall: true),
-                ),
-              ),
+              ...savedProducts
+                  .take(4)
+                  .map(
+                    (product) => Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: ProductCard(product: product, isSmall: true),
+                    ),
+                  ),
             ],
           ),
         ),
@@ -410,10 +391,11 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Product> products,
   ) {
     // Get top-rated products (4.5+ rating) sorted by rating count for popularity
-    final popularProducts = products
-        .where((product) => product.rating >= 4.0 && product.isAvailable)
-        .toList()
-      ..sort((a, b) => b.ratingCount.compareTo(a.ratingCount));
+    final popularProducts =
+        products
+            .where((product) => product.rating >= 4.0 && product.isAvailable)
+            .toList()
+          ..sort((a, b) => b.ratingCount.compareTo(a.ratingCount));
 
     final topPopular = popularProducts.take(4).toList();
 

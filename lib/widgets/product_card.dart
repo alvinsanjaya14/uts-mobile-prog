@@ -59,7 +59,7 @@ class ProductCard extends StatelessWidget {
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
               ),
-              child: Image.network(
+              child: Image.asset(
                 product.imageUrl!,
                 fit: BoxFit.cover,
                 width: double.infinity,
@@ -176,7 +176,7 @@ class StaticProductCard extends StatelessWidget {
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
               ),
-              child: Image.network(
+              child: Image.asset(
                 imageUrl!,
                 fit: BoxFit.cover,
                 width: double.infinity,
@@ -304,7 +304,7 @@ class _ProductRowCardState extends State<ProductRowCard> {
           ? const Center(child: Icon(Icons.image, size: 24, color: Colors.grey))
           : ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
+              child: Image.asset(
                 widget.product.imageUrl!,
                 fit: BoxFit.cover,
                 width: double.infinity,

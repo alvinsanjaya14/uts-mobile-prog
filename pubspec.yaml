@@ -67,6 +67,8 @@ flutter:
     - assets/stock_image1.jpg
     - assets/paypal.png
     - assets/
+    - assets/paypal.png
+    - assets/apple_pay.png
 
 
   # To add assets to your application, add an assets section, like this:

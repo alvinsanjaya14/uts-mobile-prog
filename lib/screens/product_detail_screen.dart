@@ -93,7 +93,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 decoration: BoxDecoration(
                   image: product.imageUrl != null
                       ? DecorationImage(
-                          image: NetworkImage(product.imageUrl!),
+                          image: AssetImage(product.imageUrl!),
                           fit: BoxFit.cover,
                         )
                       : null,
