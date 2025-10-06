@@ -61,6 +61,11 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/apple_pay.png
+    - assets/login1.png
+    - assets/signup.png
+    - assets/stock_image1.jpg
+    - assets/paypal.png
     - assets/
 
 

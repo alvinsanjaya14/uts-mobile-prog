@@ -53,8 +53,7 @@ class CartScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 _buildPaymentMethodTile(
-                  assetPath:
-                      'assets/paypal.png', // Anda perlu menambahkan gambar ini
+                  assetPath: 'assets/paypal.png',
                   title: 'PayPal',
                   onTap: handlePaymentSelection,
                 ),
@@ -67,8 +66,7 @@ class CartScreen extends StatelessWidget {
                 ),
                 const Divider(),
                 _buildPaymentMethodTile(
-                  assetPath:
-                      'assets/apple_pay.png', // Anda perlu menambahkan gambar ini
+                  assetPath: 'assets/apple_pay.png',
                   title: 'Apple Pay',
                   onTap: handlePaymentSelection,
                 ),
@@ -90,7 +88,26 @@ class CartScreen extends StatelessWidget {
   }) {
     Widget leadingWidget;
     if (assetPath != null) {
-      leadingWidget = Image.asset(assetPath, width: 36, height: 36);
+      leadingWidget = Image.asset(
+        assetPath,
+        width: 36,
+        height: 36,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) => Container(
+          width: 36,
+          height: 36,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Icon(
+            Icons.account_balance_wallet,
+            color: Colors.grey.shade700,
+            size: 20,
+          ),
+        ),
+      );
     } else {
       leadingWidget = Icon(icon, color: iconColor, size: 36);
     }
