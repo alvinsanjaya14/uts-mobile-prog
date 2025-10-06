@@ -3,11 +3,43 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:uts_mobile_restoran/routes.dart';
 import 'package:uts_mobile_restoran/screens/loginOrSignup_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/bottom_navbar.dart';
 import '../controllers/product_controller.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String _name = 'John Smith';
+  String _email = 'johndoe@gmail.com';
+
+  static const _kName = 'user_name';
+  static const _kEmail = 'user_email';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final name = prefs.getString(_kName);
+      final email = prefs.getString(_kEmail);
+      if (mounted) {
+        setState(() {
+          if (name != null) _name = name;
+          if (email != null) _email = email;
+        });
+      }
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,19 +69,16 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
-                      'John Smith',
-                      style: TextStyle(
+                      _name,
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      'johndoe@gmail.com',
-                      style: TextStyle(color: Colors.grey),
-                    ),
+                    const SizedBox(height: 4),
+                    Text(_email, style: const TextStyle(color: Colors.grey)),
                   ],
                 ),
               ],
@@ -78,8 +107,10 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   _buildListTile(
                     'Personal details',
-                    onTap: () {
-                      context.push(AppRoutes.personalDetails);
+                    onTap: () async {
+                      await context.push(AppRoutes.personalDetails);
+                      // refresh profile header (name/email) after returning
+                      _loadProfile();
                     },
                   ),
                   _buildListTile(
@@ -116,14 +147,17 @@ class ProfileScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Signed out successfully!")),
-                          );
+                        const SnackBar(
+                          content: Text("Signed out successfully!"),
+                        ),
+                      );
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AccountScreen()),
-                        );
-                      },
+                        MaterialPageRoute(
+                          builder: (context) => AccountScreen(),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green[50],
                       foregroundColor: Colors.black,
@@ -137,14 +171,17 @@ class ProfileScreen extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Account deleted successfully!")),
-                          );
+                        const SnackBar(
+                          content: Text("Account deleted successfully!"),
+                        ),
+                      );
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AccountScreen()),
-                        );
-                      },
+                        MaterialPageRoute(
+                          builder: (context) => AccountScreen(),
+                        ),
+                      );
+                    },
                     child: const Text(
                       'Delete account',
                       style: TextStyle(color: Colors.red),
